@@ -27,15 +27,14 @@ function baseLayout(preheader: string, content: string) {
 
         <!-- HEADER -->
         <tr>
-          <td style="background:${NAVY};border-radius:12px 12px 0 0;padding:24px 32px;">
+          <td style="background:${NAVY};border-radius:12px 12px 0 0;padding:16px 32px;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td>
                   <img src="https://gescovirtual.com/img/logo-negativo.png"
                        alt="GESCO"
-                       width="130"
-                       style="display:block;border:0;outline:none;max-width:130px;height:auto;" />
-                  <p style="margin:6px 0 0;font-size:10px;font-weight:700;letter-spacing:.07em;color:${BRAND};text-transform:uppercase;">Corporaci&#243;n para la Gesti&#243;n del Conocimiento</p>
+                       width="155"
+                       style="display:block;border:0;outline:none;max-width:155px;height:auto;" />
                 </td>
                 <td align="right">
                   <p style="margin:0;font-size:11px;color:#4e6294;">gescovirtual.com</p>
@@ -236,7 +235,7 @@ export function templateResultadoChaside(data: ResultadoData): { subject: string
 
   const content = `
     <!-- Hero del resultado -->
-    <div style="background:${NAVY};padding:28px 32px;">
+    <div style="background:${NAVY};padding:20px 32px;">
       <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:.08em;color:${ACCENT};text-transform:uppercase;">Resultado orientativo</p>
       <h2 style="margin:0 0 6px;font-size:22px;font-weight:700;color:#ffffff;">Informe Vocacional CHASIDE</h2>
       <p style="margin:0;font-size:14px;color:#8090b0;">Preparado para <strong style="color:#fff;">${fullName}</strong> &middot; ${esc(data.fecha)}</p>
