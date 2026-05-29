@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import ShareButtons from '@/components/global/ShareButtons.astro';
 import { SITE } from '@/data/site';
 import { breadcrumbSchema } from '@/data/schema';
 
@@ -121,6 +122,8 @@ const schema = [
         </svg>
         Descargar PDF
       </a>
+
+      <ShareButtons url={canonical} title={entry.data.title} class="mt-4 pt-4 border-t border-black/8" />
 
     </aside>
 
