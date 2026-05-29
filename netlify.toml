@@ -4,3 +4,15 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+[[redirects]]
+  from   = "http://gescovirtual.com/*"
+  to     = "https://gescovirtual.com/:splat"
+  status = 301
+  force  = true
+
+[[redirects]]
+  from   = "http://www.gescovirtual.com/*"
+  to     = "https://gescovirtual.com/:splat"
+  status = 301
+  force  = true
