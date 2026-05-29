@@ -1,0 +1,29 @@
+---
+import { WA } from '@/data/whatsapp';
+import type { WaKey } from '@/data/whatsapp';
+import WhatsAppButton from '@/components/global/WhatsAppButton.astro';
+
+interface Props {
+  title?: string;
+  text?: string;
+  waKey: WaKey;
+  source: string;
+}
+
+const {
+  title = 'Prepárate con una ruta clara',
+  text = 'Escríbenos por WhatsApp y un asesor te orientará según tu objetivo, ciudad y tiempo disponible.',
+  waKey,
+  source,
+} = Astro.props;
+---
+
+<section class="section-pad bg-navy text-white">
+  <div class="container-g grid items-center gap-6 md:grid-cols-[1fr_auto]">
+    <div>
+      <h2 class="text-3xl font-extrabold md:text-4xl">{title}</h2>
+      <p class="mt-4 max-w-2xl text-white/75">{text}</p>
+    </div>
+    <WhatsAppButton href={WA[waKey]} label="Hablar por WhatsApp" source={source} />
+  </div>
+</section>

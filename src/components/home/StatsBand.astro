@@ -1,0 +1,12 @@
+---
+import Counter from '@/components/interactive/Counter';
+---
+
+<section class="bg-brand py-12">
+  <div class="container-g grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <Counter client:visible target={10000} suffix="+" label="estudiantes preparados" />
+    <Counter client:visible target={500} suffix="+" label="estudiantes GAR" />
+    <Counter client:visible target={10} suffix="+" label="años de experiencia" />
+    <Counter client:visible target={12} suffix="+" label="puntajes perfectos" />
+  </div>
+</section>

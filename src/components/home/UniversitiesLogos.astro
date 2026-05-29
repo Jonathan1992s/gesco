@@ -1,0 +1,16 @@
+---
+import { universities } from '@/data/universities';
+---
+
+<section class="bg-white py-10">
+  <div class="container-g">
+    <p class="text-center text-sm font-bold uppercase tracking-wide text-muted">Rutas para universidades públicas y privadas</p>
+    <div class="mt-6 flex flex-wrap justify-center gap-3">
+      {universities.map((university) => (
+        <a href={`/universidades/${university.slug}/`} class="rounded-full border border-black/10 px-4 py-2 text-sm font-bold text-navy hover:border-brand hover:text-brand">
+          {university.shortName}
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

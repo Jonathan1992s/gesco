@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" fill="none">
+  <!-- Background circle -->
+  <circle cx="240" cy="180" r="150" fill="#f0f7ff"/>
+
+  <!-- Book base -->
+  <rect x="130" y="200" width="220" height="130" rx="8" fill="#1a1a2e"/>
+  <rect x="132" y="202" width="216" height="126" rx="6" fill="#fff"/>
+  <rect x="238" y="202" width="2" height="126" fill="#e0e0e0"/>
+
+  <!-- Left page lines -->
+  <rect x="148" y="222" width="80" height="6" rx="3" fill="#ccc"/>
+  <rect x="148" y="236" width="70" height="6" rx="3" fill="#ccc"/>
+  <rect x="148" y="250" width="75" height="6" rx="3" fill="#ccc"/>
+  <rect x="148" y="264" width="60" height="6" rx="3" fill="#1570c4" opacity="0.5"/>
+  <rect x="148" y="278" width="72" height="6" rx="3" fill="#ccc"/>
+  <rect x="148" y="292" width="65" height="6" rx="3" fill="#ccc"/>
+
+  <!-- Right page lines -->
+  <rect x="250" y="222" width="80" height="6" rx="3" fill="#ccc"/>
+  <rect x="250" y="236" width="72" height="6" rx="3" fill="#ccc"/>
+  <rect x="250" y="250" width="78" height="6" rx="3" fill="#1570c4" opacity="0.5"/>
+  <rect x="250" y="264" width="68" height="6" rx="3" fill="#ccc"/>
+  <rect x="250" y="278" width="74" height="6" rx="3" fill="#ccc"/>
+  <rect x="250" y="292" width="62" height="6" rx="3" fill="#ccc"/>
+
+  <!-- Graduation cap -->
+  <polygon points="240,80 180,110 240,130 300,110" fill="#1570c4"/>
+  <rect x="233" y="128" width="14" height="40" rx="3" fill="#1570c4"/>
+  <line x1="300" y1="110" x2="300" y2="148" stroke="#1570c4" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="300" cy="150" r="8" fill="#f4c430"/>
+  <rect x="225" y="167" width="30" height="10" rx="5" fill="#1a1a2e"/>
+
+  <!-- Certificate badge -->
+  <circle cx="370" cy="145" r="38" fill="#f4c430"/>
+  <circle cx="370" cy="145" r="30" fill="#fff"/>
+  <!-- Star inside badge -->
+  <polygon points="370,118 375,135 393,135 379,146 384,163 370,152 356,163 361,146 347,135 365,135" fill="#f4c430"/>
+
+  <!-- Circular arrows (continuous learning) -->
+  <path d="M110 145 A 60 60 0 1 1 170 205" stroke="#1570c4" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <polygon points="170,205 155,195 165,215" fill="#1570c4"/>
+  <path d="M110 145 A 60 60 0 0 0 50 85" stroke="#1570c4" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="8 6"/>
+
+  <!-- Ministry seal hint -->
+  <rect x="168" y="175" width="144" height="22" rx="11" fill="#1570c4"/>
+  <text x="240" y="191" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="0.5">MINISTERIO DE TRABAJO</text>
+</svg>

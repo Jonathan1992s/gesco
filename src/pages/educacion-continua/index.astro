@@ -1,0 +1,74 @@
+﻿---
+import ProgramLayout from '@/layouts/ProgramLayout.astro';
+import ProgramHero from '@/components/program/ProgramHero.astro';
+import ProgramBenefits from '@/components/program/ProgramBenefits.astro';
+import CurriculumGrid from '@/components/program/CurriculumGrid.astro';
+import FAQAccordion from '@/components/program/FAQAccordion.astro';
+import ProgramCTA from '@/components/program/ProgramCTA.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { getProgram } from '@/data/programs';
+import { programFaqs } from '@/data/faqs';
+import { breadcrumbSchema, courseSchema, faqSchema } from '@/data/schema';
+
+const program = getProgram('educacion-continua');
+if (!program) throw new Error('Programa educacion-continua no encontrado');
+const seo = seoByPath['/educacion-continua/'];
+const canonical = `${SITE.url}/educacion-continua/`;
+const faqs = programFaqs.educacionContinua;
+const schema = [
+  courseSchema(program.name, program.description, { courseMode: 'online' }),
+  faqSchema(faqs),
+  breadcrumbSchema([{ label: 'Inicio', href: '/' }, { label: program.name, href: '/educacion-continua/' }]),
+];
+---
+
+<ProgramLayout title={seo.title} description={seo.description} canonical={canonical} pageName={program.name} schema={schema}>
+  <ProgramHero program={program} />
+
+  <!-- Certificación highlight -->
+  <section class="bg-brand py-10">
+    <div class="container-g flex flex-col items-center gap-4 text-center md:flex-row md:text-left">
+      <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white/15">
+        <svg aria-hidden="true" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+        </svg>
+      </div>
+      <div>
+        <p class="text-lg font-extrabold text-white">Certificaciones avaladas por el Ministerio de Trabajo del Ecuador</p>
+        <p class="mt-1 text-white/80">Nuestros certificados tienen validez oficial y se suman a tu hoja de vida profesional.</p>
+      </div>
+      <a
+        href="/cursos-certificacion/"
+        class="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-bold text-brand transition hover:bg-surface"
+      >
+        Ver requisitos de certificación
+      </a>
+    </div>
+  </section>
+
+  <ProgramBenefits items={program.benefits} />
+  <CurriculumGrid items={program.curriculum} />
+
+  <!-- CTA Plataforma -->
+  <section class="bg-surface py-10">
+    <div class="container-g flex flex-col items-center gap-4 text-center">
+      <p class="text-lg font-bold text-navy">¿Quieres ver los cursos disponibles en la plataforma?</p>
+      <a
+        href="https://plataformagesco.com/course/index.php?categoryid=4"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white! shadow-sm transition hover:bg-brand-dark"
+      >
+        <svg aria-hidden="true" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        Ver cursos en Plataforma Gesco
+      </a>
+    </div>
+  </section>
+
+  <FAQAccordion items={faqs} />
+  <ProgramCTA waKey={program.waKey} source="educacion-continua-final" />
+</ProgramLayout>

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" fill="none">
+  <!-- Background -->
+  <circle cx="240" cy="180" r="155" fill="#f0f7ff"/>
+
+  <!-- Left building (institution) -->
+  <rect x="55" y="145" width="100" height="150" rx="6" fill="#1a1a2e"/>
+  <rect x="60" y="150" width="90" height="140" rx="4" fill="#f8f9fa"/>
+  <!-- Columns -->
+  <rect x="65" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="79" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="93" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="107" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="121" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="135" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <!-- Roof triangle -->
+  <polygon points="45,148 105,100 165,148" fill="#1570c4"/>
+  <rect x="93" y="112" width="24" height="36" rx="2" fill="#f4c430" opacity="0.8"/>
+  <!-- Windows left building -->
+  <rect x="68" y="200" width="22" height="22" rx="3" fill="#1570c4" opacity="0.5"/>
+  <rect x="98" y="200" width="22" height="22" rx="3" fill="#1570c4" opacity="0.5"/>
+  <rect x="128" y="200" width="22" height="22" rx="3" fill="#1570c4" opacity="0.5"/>
+  <!-- Door left -->
+  <rect x="90" y="260" width="30" height="35" rx="4" fill="#1570c4"/>
+
+  <!-- Right building (GESCO) -->
+  <rect x="325" y="145" width="100" height="150" rx="6" fill="#1a1a2e"/>
+  <rect x="330" y="150" width="90" height="140" rx="4" fill="#f8f9fa"/>
+  <!-- Columns -->
+  <rect x="335" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="349" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="363" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="377" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="391" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <rect x="405" y="155" width="8" height="130" rx="2" fill="#1570c4" opacity="0.2"/>
+  <!-- Roof triangle -->
+  <polygon points="315,148 375,100 435,148" fill="#1570c4"/>
+  <!-- GESCO text on right building roof -->
+  <text x="375" y="128" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="10" font-weight="700">GESCO</text>
+  <!-- Windows right building -->
+  <rect x="338" y="200" width="22" height="22" rx="3" fill="#1570c4" opacity="0.5"/>
+  <rect x="368" y="200" width="22" height="22" rx="3" fill="#1570c4" opacity="0.5"/>
+  <rect x="398" y="200" width="22" height="22" rx="3" fill="#1570c4" opacity="0.5"/>
+  <!-- Door right -->
+  <rect x="360" y="260" width="30" height="35" rx="4" fill="#1570c4"/>
+
+  <!-- Handshake in the center -->
+  <ellipse cx="240" cy="220" rx="55" ry="55" fill="#1570c4"/>
+  <ellipse cx="240" cy="220" rx="48" ry="48" fill="#fff"/>
+  <!-- Left hand -->
+  <path d="M196 218 Q210 205 225 218 Q232 224 240 220" stroke="#1570c4" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <rect x="188" y="214" width="20" height="12" rx="6" fill="#ffb8b8"/>
+  <!-- Right hand -->
+  <path d="M284 218 Q270 205 255 218 Q248 224 240 220" stroke="#1570c4" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <rect x="272" y="214" width="20" height="12" rx="6" fill="#ffb8b8"/>
+  <!-- Connection point -->
+  <circle cx="240" cy="220" r="8" fill="#f4c430"/>
+  <path d="M237 220 L239 222 L244 217" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Dotted connection lines buildings to handshake -->
+  <line x1="165" y1="220" x2="192" y2="220" stroke="#1570c4" stroke-width="2" stroke-dasharray="5 4"/>
+  <line x1="288" y1="220" x2="315" y2="220" stroke="#1570c4" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <!-- Badge top center -->
+  <circle cx="240" cy="80" r="30" fill="#f4c430"/>
+  <circle cx="240" cy="80" r="23" fill="#fff"/>
+  <polygon points="240,60 244,72 257,72 247,79 251,91 240,84 229,91 233,79 223,72 236,72" fill="#f4c430"/>
+</svg>

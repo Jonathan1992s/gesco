@@ -1,0 +1,40 @@
+---
+import { SITE } from '@/data/site';
+
+interface Props {
+  headline: string;
+  description: string;
+  canonical: string;
+  datePublished: string;
+  dateModified?: string;
+}
+
+const { headline, description, canonical, datePublished, dateModified = datePublished } = Astro.props;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline,
+  description,
+  datePublished,
+  dateModified,
+  author: {
+    '@type': 'Organization',
+    name: SITE.name,
+    url: SITE.url,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: SITE.name,
+    logo: {
+      '@type': 'ImageObject',
+      url: SITE.ogImage,
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': canonical,
+  },
+};
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />

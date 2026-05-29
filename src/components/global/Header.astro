@@ -1,0 +1,350 @@
+---
+import { SITE } from '@/data/site';
+import { servicesItems, universidadesDropdown, publicacionesDropdown } from '@/data/navigation';
+---
+
+<header class="sticky top-0 z-50 border-b border-black/5 bg-white/95 shadow-sm backdrop-blur">
+  <div class="flex min-h-20 w-full items-center justify-between gap-3 px-6 xl:px-10">
+
+    <a href="/" class="flex shrink-0 items-center" aria-label="Ir al inicio de GESCO">
+      <img src={SITE.logo} alt="GESCO Preuniversitario" width="140" height="47" />
+    </a>
+
+    <button
+      id="nav-toggle"
+      class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-black/10 xl:hidden"
+      type="button"
+      aria-label="Abrir menú de navegación"
+      aria-controls="nav-menu"
+      aria-expanded="false"
+    >
+      <svg aria-hidden="true" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+    </button>
+
+    <nav
+      id="nav-menu"
+      class="absolute left-4 right-4 top-20 hidden rounded-2xl border border-black/10 bg-white p-4 shadow-xl xl:static xl:flex xl:flex-1 xl:items-center xl:justify-start xl:border-0 xl:bg-transparent xl:p-0 xl:shadow-none"
+    >
+      <ul class="flex flex-col gap-1 xl:flex-row xl:items-center xl:justify-start xl:gap-0.5">
+
+        <!-- Inicio -->
+        <li>
+          <a class="block whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:px-3" href="/">Inicio</a>
+        </li>
+
+        <!-- Preuniversitario -->
+        <li>
+          <a class="block whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:px-3" href="/preuniversitario/">Preuniversitario</a>
+        </li>
+
+        <!-- Universidades ▼ — dropdown -->
+        <li class="relative">
+          <!-- Trigger desktop -->
+          <button
+            id="univ-trigger"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="univ-panel"
+            class="hidden w-full whitespace-nowrap items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:flex xl:px-3"
+          >
+            Universidades
+            <svg aria-hidden="true" id="univ-arrow" class="h-3.5 w-3.5 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <!-- Panel desktop -->
+          <ul
+            id="univ-panel"
+            role="menu"
+            class="absolute left-0 top-full z-50 mt-2 hidden min-w-[15rem] rounded-2xl border border-black/8 bg-white py-2 shadow-xl"
+          >
+            {universidadesDropdown.map((item) => (
+              <li role="none">
+                <a
+                  role="menuitem"
+                  href={item.href}
+                  target={item.external ? '_blank' : undefined}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  class="block px-4 py-3 transition hover:bg-surface"
+                >
+                  <span class="block text-sm font-semibold text-navy">{item.label}</span>
+                  <span class="block text-xs text-muted">{item.desc}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <!-- Trigger móvil (acordeón) -->
+          <button
+            id="univ-mobile-trigger"
+            type="button"
+            aria-expanded="false"
+            class="flex w-full items-center justify-between rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:hidden"
+          >
+            Universidades
+            <svg aria-hidden="true" id="univ-mobile-arrow" class="h-3.5 w-3.5 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <!-- Sub-items móvil -->
+          <ul id="univ-mobile-panel" class="hidden pl-3 xl:hidden">
+            {universidadesDropdown.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  target={item.external ? '_blank' : undefined}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  class="block rounded-full px-3 py-2 text-sm font-medium text-muted hover:text-brand"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+
+        <!-- Servicios -->
+        <li class="relative">
+          <button
+            id="services-trigger"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="services-panel"
+            class="hidden w-full whitespace-nowrap items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:flex xl:px-3"
+          >
+            Servicios
+            <svg aria-hidden="true" id="services-arrow" class="h-3.5 w-3.5 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <ul
+            id="services-panel"
+            role="menu"
+            class="absolute left-0 top-full z-50 mt-2 hidden min-w-[16rem] rounded-2xl border border-black/8 bg-white py-2 shadow-xl"
+          >
+            {servicesItems.map((item) => (
+              <li role="none">
+                <a
+                  role="menuitem"
+                  href={item.href}
+                  class="block px-4 py-3 text-sm font-semibold text-navy transition hover:bg-surface hover:text-brand"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <button
+            id="services-mobile-trigger"
+            type="button"
+            aria-expanded="false"
+            class="flex w-full items-center justify-between rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:hidden"
+          >
+            Servicios
+            <svg aria-hidden="true" id="services-mobile-arrow" class="h-3.5 w-3.5 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <ul id="services-mobile-panel" class="hidden pl-3 xl:hidden">
+            {servicesItems.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="block rounded-full px-3 py-2 text-sm font-medium text-muted hover:text-brand"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+
+        <!-- Cursos de Certificación -->
+        <li>
+          <a class="block whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:px-3" href="/cursos-certificacion/">Cursos de Certificación</a>
+        </li>
+
+        <!-- Test Vocacional -->
+        <li>
+          <a class="block whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:px-3" href="/test-vocacional/">Test Vocacional</a>
+        </li>
+
+        <!-- Publicaciones ▼ — dropdown -->
+        <li class="relative">
+          <!-- Trigger desktop -->
+          <button
+            id="pub-trigger"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="pub-panel"
+            class="hidden w-full whitespace-nowrap items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:flex xl:px-3"
+          >
+            Publicaciones
+            <svg aria-hidden="true" id="pub-arrow" class="h-3.5 w-3.5 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <!-- Panel desktop -->
+          <ul
+            id="pub-panel"
+            role="menu"
+            class="absolute left-0 top-full z-50 mt-2 hidden min-w-[18rem] rounded-2xl border border-black/8 bg-white py-2 shadow-xl"
+          >
+            {publicacionesDropdown.map((item) => (
+              <li role="none">
+                <a
+                  role="menuitem"
+                  href={item.href}
+                  class="block px-4 py-3 transition hover:bg-surface"
+                >
+                  <span class="block text-sm font-semibold text-navy">{item.label}</span>
+                  <span class="block text-xs text-muted">{item.desc}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <!-- Trigger móvil (acordeón) -->
+          <button
+            id="pub-mobile-trigger"
+            type="button"
+            aria-expanded="false"
+            class="flex w-full items-center justify-between rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:hidden"
+          >
+            Publicaciones
+            <svg aria-hidden="true" id="pub-mobile-arrow" class="h-3.5 w-3.5 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <!-- Sub-items móvil -->
+          <ul id="pub-mobile-panel" class="hidden pl-3 xl:hidden">
+            {publicacionesDropdown.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="block rounded-full px-3 py-2 text-sm font-medium text-muted hover:text-brand"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+
+        <!-- Contacto -->
+        <li>
+          <a class="block whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold text-navy hover:bg-surface hover:text-brand xl:px-3" href="/contacto/">Contacto</a>
+        </li>
+      </ul>
+
+      <!-- CTAs -->
+      <div class="mt-3 flex flex-col gap-2 xl:ml-auto xl:mt-0 xl:flex-row xl:items-center xl:gap-2">
+        <a
+          href={SITE.platform}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Abrir Plataforma Gesco"
+          class="flex min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand px-4 py-2 text-sm font-bold text-white! shadow-sm transition hover:bg-brand-dark xl:px-4"
+        >
+          <svg aria-hidden="true" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+          <span>Plataforma</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    // Mobile menu toggle
+    const navToggle = document.getElementById('nav-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    navToggle?.addEventListener('click', () => {
+      const open = navMenu?.classList.toggle('hidden') === false;
+      navToggle.setAttribute('aria-expanded', String(open));
+    });
+
+    // Desktop dropdowns — generic helper
+    type DropdownIds = { trigger: string; panel: string; arrow: string };
+    function makeDropdown({ trigger: tId, panel: pId, arrow: aId }: DropdownIds) {
+      const trigger = document.getElementById(tId);
+      const panel   = document.getElementById(pId);
+      const arrow   = document.getElementById(aId);
+      function close() {
+        panel?.classList.add('hidden');
+        arrow?.classList.remove('rotate-180');
+        trigger?.setAttribute('aria-expanded', 'false');
+      }
+      function open(others: Array<() => void>) {
+        others.forEach((c) => c());
+        panel?.classList.remove('hidden');
+        arrow?.classList.add('rotate-180');
+        trigger?.setAttribute('aria-expanded', 'true');
+      }
+      return { close, open, trigger };
+    }
+
+    const univ     = makeDropdown({ trigger: 'univ-trigger',     panel: 'univ-panel',     arrow: 'univ-arrow' });
+    const services = makeDropdown({ trigger: 'services-trigger', panel: 'services-panel', arrow: 'services-arrow' });
+    const pub      = makeDropdown({ trigger: 'pub-trigger',      panel: 'pub-panel',      arrow: 'pub-arrow' });
+
+    const allClose = [univ.close, services.close, pub.close];
+
+    univ.trigger?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('univ-panel')?.classList.contains('hidden')
+        ? univ.open(allClose.filter((_, i) => i !== 0))
+        : univ.close();
+    });
+    services.trigger?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('services-panel')?.classList.contains('hidden')
+        ? services.open(allClose.filter((_, i) => i !== 1))
+        : services.close();
+    });
+    pub.trigger?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('pub-panel')?.classList.contains('hidden')
+        ? pub.open(allClose.filter((_, i) => i !== 2))
+        : pub.close();
+    });
+
+    document.addEventListener('click', () => allClose.forEach((c) => c()));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') allClose.forEach((c) => c()); });
+
+    // Mobile accordions
+    [
+      ['univ-mobile-trigger',     'univ-mobile-panel',     'univ-mobile-arrow'],
+      ['services-mobile-trigger', 'services-mobile-panel', 'services-mobile-arrow'],
+      ['pub-mobile-trigger',      'pub-mobile-panel',      'pub-mobile-arrow'],
+    ].forEach(([tId, pId, aId]) => {
+      const t = document.getElementById(tId);
+      const p = document.getElementById(pId);
+      const a = document.getElementById(aId);
+      t?.addEventListener('click', () => {
+        const open = p?.classList.toggle('hidden') === false;
+        a?.classList.toggle('rotate-180', open);
+        t.setAttribute('aria-expanded', String(open));
+      });
+    });
+  }
+
+  // astro:page-load fires en cada navegación (view transitions) y en la carga inicial
+  document.addEventListener('astro:page-load', initHeader);
+</script>

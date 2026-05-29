@@ -1,0 +1,23 @@
+---
+import { MessageCircle } from '@lucide/astro';
+import { WA } from '@/data/whatsapp';
+import WhatsAppButton from '@/components/global/WhatsAppButton.astro';
+---
+
+<section class="bg-navy px-4 py-14 text-white md:py-16">
+  <div class="container-g overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl md:p-10">
+    <div class="grid items-center gap-8 md:grid-cols-[1fr_auto]">
+      <div class="flex gap-4">
+        <span class="hidden h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-accent text-navy md:inline-flex" aria-hidden="true">
+          <MessageCircle class="h-7 w-7" stroke-width={2.4} />
+        </span>
+        <div>
+          <p class="font-bold uppercase tracking-wide text-accent">Siguiente paso</p>
+          <h2 class="mt-2 text-3xl font-extrabold md:text-4xl">Tú eliges la universidad… ¡Nosotros te preparamos!</h2>
+          <p class="mt-4 max-w-2xl text-white/75">Conversemos por WhatsApp y armemos una ruta según tu ciudad, modalidad, tiempo disponible y universidad objetivo.</p>
+        </div>
+      </div>
+      <WhatsAppButton href={WA.home} label="Quiero una ruta de preparación" source="final-cta" class="w-full md:w-auto" />
+    </div>
+  </div>
+</section>

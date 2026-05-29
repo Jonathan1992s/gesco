@@ -1,0 +1,37 @@
+﻿---
+import ProgramLayout from '@/layouts/ProgramLayout.astro';
+import ProgramHero from '@/components/program/ProgramHero.astro';
+import ProgramBenefits from '@/components/program/ProgramBenefits.astro';
+import CurriculumGrid from '@/components/program/CurriculumGrid.astro';
+import FAQAccordion from '@/components/program/FAQAccordion.astro';
+import ProgramCTA from '@/components/program/ProgramCTA.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { getProgram } from '@/data/programs';
+import { generalFaqs } from '@/data/faqs';
+import { breadcrumbSchema, courseSchema, faqSchema } from '@/data/schema';
+
+const program = getProgram('preuniversitario');
+if (!program) throw new Error('Programa preuniversitario no encontrado');
+const quitoProgram = {
+  ...program,
+  title: 'Preuniversitario online con sede en Quito',
+  description:
+    'GESCO tiene su sede administrativa en Quito y dicta clases online a estudiantes de todo Ecuador mediante Plataforma Gesco, clases en vivo, simuladores y seguimiento cercano.',
+  waKey: 'quito' as const,
+};
+const seo = seoByPath['/preuniversitario-quito/'];
+const canonical = `${SITE.url}/preuniversitario-quito/`;
+const schema = [
+  courseSchema(quitoProgram.name, quitoProgram.description, { courseMode: 'online' }),
+  faqSchema(generalFaqs),
+  breadcrumbSchema([{ label: 'Inicio', href: '/' }, { label: 'Preuniversitario online desde Quito', href: '/preuniversitario-quito/' }]),
+];
+---
+
+<ProgramLayout title={seo.title} description={seo.description} canonical={canonical} pageName="Preuniversitario online desde Quito" schema={schema}>
+  <ProgramHero program={quitoProgram} />
+  <ProgramBenefits items={quitoProgram.benefits} />
+  <CurriculumGrid items={quitoProgram.curriculum} />
+  <FAQAccordion items={generalFaqs} />
+  <ProgramCTA waKey="quito" source="quito-final" />
+</ProgramLayout>

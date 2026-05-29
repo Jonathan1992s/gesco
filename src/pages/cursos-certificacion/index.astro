@@ -1,0 +1,299 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/global/Breadcrumbs.astro';
+import WhatsAppButton from '@/components/global/WhatsAppButton.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { WA } from '@/data/whatsapp';
+import { breadcrumbSchema, courseSchema, faqSchema } from '@/data/schema';
+
+const seo = seoByPath['/cursos-certificacion/'];
+const canonical = `${SITE.url}/cursos-certificacion/`;
+
+const certifications = [
+  {
+    name: 'Desarrollo de aplicaciones con tecnologías web',
+    code: 'TIYC-DATW-201707',
+    family: 'Tecnologías web',
+    scope: 'Certificación con base en el perfil completo y todas sus unidades de competencia.',
+    validity: '3 años',
+    prerequisites: ['Bachillerato Técnico', 'Experiencia: no aplica'],
+    evaluation: ['Evaluación teórica con mínimo 70%', 'Evaluación práctica con casos o ejercicios al 100%'],
+    competencies: [
+      'Desarrollo de elementos software en entorno cliente',
+      'Implementación, verificación y documentación de aplicaciones web',
+      'Desarrollo de elementos software en entorno servidor',
+    ],
+  },
+  {
+    name: 'Ensamble y mantenimiento de equipos electrónicos',
+    code: 'ATS-EMEE-EMEE-001',
+    family: 'Actividades tipo servicios',
+    scope: 'Esquema exclusivo para instituciones educativas regentadas por el Ministerio de Educación.',
+    validity: '5 años',
+    prerequisites: [
+      'Bachillerato General con Complementario Técnico Productivo',
+      '1.200 horas de experiencia: hasta 600 horas en institución educativa y mínimo 600 horas en entidad receptora',
+      'Capacitación: no aplica',
+    ],
+    evaluation: ['Evaluación teórica con mínimo 70%', 'Evaluación práctica con casos o ejercicios al 100%'],
+    competencies: [
+      'Ensamble, montaje, configuración y mantenimiento de equipos de telecomunicación',
+      'Mantenimiento de equipos de audio y video',
+      'Montaje y configuración de microcontroladores y PLC',
+    ],
+  },
+  {
+    name: 'Facilitación en actividades de capacitación',
+    code: 'AE-FAC-FAC-003',
+    family: 'Actividades de enseñanza',
+    scope: 'Certificación con base en el perfil completo de facilitación de procesos de capacitación.',
+    validity: '5 años',
+    prerequisites: [
+      'Título de tercer nivel registrado en la entidad reguladora de la educación',
+      '1 año como educador comprobado con contrato, certificación laboral o RUC relacionado',
+      '60 horas de capacitación en temática relacionada con el perfil',
+    ],
+    evaluation: ['Evaluación teórica con mínimo 70%', 'Evaluación práctica con casos o ejercicios al 100%'],
+    competencies: [
+      'Diseño de enseñanza-aprendizaje según necesidades del grupo objetivo',
+      'Ejecución de procesos de capacitación con estrategias metodológicas',
+      'Evaluación del cumplimiento de objetivos y propuesta de mejora',
+    ],
+  },
+];
+
+const faqs = [
+  {
+    q: '¿Qué documentos debo revisar antes de aplicar?',
+    a: 'Debes revisar el esquema de certificación del perfil que te interesa, validar tus estudios, experiencia y capacitación requerida, y preparar evidencias comprobables antes de iniciar el proceso.',
+  },
+  {
+    q: '¿Todas las certificaciones tienen los mismos requisitos?',
+    a: 'No. Cada perfil tiene requisitos propios. Desarrollo web solicita Bachillerato Técnico; ensamble electrónico aplica a instituciones educativas específicas; facilitación requiere título de tercer nivel, experiencia y capacitación relacionada.',
+  },
+  {
+    q: '¿Cómo se evalúa la certificación?',
+    a: 'Los esquemas revisados contemplan evaluación teórica con mínimo 70% y evaluación práctica con casos o ejercicios al 100%.',
+  },
+  {
+    q: '¿Cuánto dura la vigencia de la certificación?',
+    a: 'La vigencia depende del perfil: desarrollo de aplicaciones con tecnologías web tiene 3 años; ensamble de equipos electrónicos y facilitación en capacitación tienen 5 años.',
+  },
+];
+
+const relatedServices = [
+  {
+    title: 'Educación Continua',
+    description: 'Explora programas de formación online para fortalecer tu perfil profesional antes o después de certificarte.',
+    href: '/educacion-continua/',
+  },
+  {
+    title: 'Capacitación Docente',
+    description: 'Conoce rutas de actualización para educadores y facilitadores que buscan respaldo formal en su trayectoria.',
+    href: '/capacitacion-docente/',
+  },
+  {
+    title: 'Convenios GESCO',
+    description: 'Revisa alternativas para instituciones que necesitan formación, acompañamiento o procesos grupales.',
+    href: '/convenios/',
+  },
+];
+
+const schema = [
+  ...certifications.map((item) =>
+    courseSchema(item.name, `${item.scope} Vigencia: ${item.validity}.`, {
+      url: '/cursos-certificacion/',
+      courseMode: 'online',
+    }),
+  ),
+  faqSchema(faqs),
+  breadcrumbSchema([{ label: 'Inicio', href: '/' }, { label: 'Cursos de certificación', href: '/cursos-certificacion/' }]),
+];
+---
+
+<BaseLayout title={seo.title} description={seo.description} canonical={canonical} schema={schema}>
+  <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Cursos de certificación', href: '/cursos-certificacion/' }]} />
+
+  <section class="bg-surface py-12 md:py-16">
+    <div class="container-g grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+      <div>
+        <p class="font-bold uppercase tracking-wide text-brand">Certificación profesional</p>
+        <h1 class="mt-3 text-4xl font-extrabold leading-tight text-navy md:text-5xl">
+          Cursos de certificación profesional con requisitos claros para aplicar
+        </h1>
+        <p class="mt-5 text-lg text-muted">
+          Revisa los perfiles disponibles, requisitos de educación, experiencia, capacitación, método de evaluación y vigencia antes de iniciar tu ruta de certificación con GESCO.
+        </p>
+        <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+          <WhatsAppButton href={WA.cursosCertificacion} label="Consultar requisitos" source="certificaciones-hero" />
+          <a
+            href="#certificaciones"
+            class="inline-flex min-h-11 items-center justify-center rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-bold text-navy transition hover:bg-surface"
+          >
+            Ver perfiles
+          </a>
+        </div>
+      </div>
+
+      <div class="flex min-h-80 items-center justify-center overflow-hidden rounded-3xl bg-white p-8 shadow-xl">
+        <img
+          src="/img/programs/program-educacion-continua.svg"
+          alt="Cursos de certificación profesional GESCO"
+          width="720"
+          height="520"
+          loading="eager"
+          class="max-h-96 w-full object-contain"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-brand py-10">
+    <div class="container-g grid gap-4 text-white md:grid-cols-3">
+      <div class="rounded-2xl bg-white/10 p-5">
+        <p class="text-3xl font-extrabold">3</p>
+        <p class="mt-1 text-white/80">perfiles de certificación revisados</p>
+      </div>
+      <div class="rounded-2xl bg-white/10 p-5">
+        <p class="text-3xl font-extrabold">70%</p>
+        <p class="mt-1 text-white/80">mínimo en evaluación teórica</p>
+      </div>
+      <div class="rounded-2xl bg-white/10 p-5">
+        <p class="text-3xl font-extrabold">100%</p>
+        <p class="mt-1 text-white/80">en evaluación práctica</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="certificaciones" class="section-pad bg-white">
+    <div class="container-g">
+      <div class="max-w-3xl">
+        <p class="font-bold uppercase tracking-wide text-brand">Perfiles disponibles</p>
+        <h2 class="mt-2 text-3xl font-extrabold text-navy md:text-4xl">Elige la certificación según tu perfil</h2>
+        <p class="mt-4 text-muted">
+          La información se organizó a partir de los esquemas de certificación disponibles en la documentación interna del proyecto.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-6 lg:grid-cols-3">
+        {certifications.map((item) => (
+          <article class="flex h-full flex-col rounded-3xl border border-black/10 bg-white p-6 shadow-sm">
+            <p class="text-sm font-bold uppercase tracking-wide text-brand">{item.family}</p>
+            <h3 class="mt-3 text-2xl font-extrabold text-navy">{item.name}</h3>
+            <p class="mt-3 text-sm font-semibold text-muted">Código: {item.code}</p>
+            <p class="mt-4 text-muted">{item.scope}</p>
+
+            <div class="mt-6">
+              <h4 class="font-extrabold text-navy">Requisitos para aplicar</h4>
+              <ul class="mt-3 grid gap-2 text-sm text-muted">
+                {item.prerequisites.map((requirement) => (
+                  <li class="flex gap-2">
+                    <span class="text-success" aria-hidden="true">✓</span>
+                    <span>{requirement}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="mt-6">
+              <h4 class="font-extrabold text-navy">Competencias evaluadas</h4>
+              <ul class="mt-3 grid gap-2 text-sm text-muted">
+                {item.competencies.map((competency) => (
+                  <li class="flex gap-2">
+                    <span class="text-brand" aria-hidden="true">•</span>
+                    <span>{competency}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="mt-6 rounded-2xl bg-surface p-4">
+              <p class="font-bold text-navy">Evaluación</p>
+              <ul class="mt-2 grid gap-1 text-sm text-muted">
+                {item.evaluation.map((evaluation) => (
+                  <li>{evaluation}</li>
+                ))}
+              </ul>
+              <p class="mt-3 text-sm font-bold text-brand">Vigencia: {item.validity}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-surface">
+    <div class="container-g grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+      <div>
+        <p class="font-bold uppercase tracking-wide text-brand">Proceso sugerido</p>
+        <h2 class="mt-2 text-3xl font-extrabold text-navy md:text-4xl">Antes de iniciar, valida tus evidencias</h2>
+        <p class="mt-4 text-muted">
+          Para evitar reprocesos, GESCO puede orientarte sobre la documentación que debes tener lista según el perfil de certificación que te interesa.
+        </p>
+      </div>
+      <ol class="grid gap-4">
+        {[
+          'Selecciona el perfil de certificación que corresponde a tu experiencia.',
+          'Valida educación formal, experiencia y capacitación requerida.',
+          'Organiza evidencias: títulos, certificados, contratos, RUC o respaldos aplicables.',
+          'Prepárate para evaluación teórica y práctica según el esquema del perfil.',
+          'Solicita orientación para revisar el proceso y fechas disponibles.',
+        ].map((step, index) => (
+          <li class="flex gap-4 rounded-2xl bg-white p-5 shadow-sm">
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand font-extrabold text-white">{index + 1}</span>
+            <span class="font-semibold text-navy">{step}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section-pad bg-white">
+    <div class="container-g">
+      <div class="max-w-3xl">
+        <p class="font-bold uppercase tracking-wide text-brand">Rutas relacionadas</p>
+        <h2 class="mt-2 text-3xl font-extrabold text-navy md:text-4xl">Conecta tu certificación con otros servicios GESCO</h2>
+        <p class="mt-4 text-muted">
+          Estas páginas complementan la información de certificación y ayudan a elegir una ruta de formación o acompañamiento institucional.
+        </p>
+      </div>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-3">
+        {relatedServices.map((service) => (
+          <article class="rounded-2xl border border-black/10 bg-surface p-6">
+            <h3 class="text-xl font-extrabold text-navy">{service.title}</h3>
+            <p class="mt-3 text-sm text-muted">{service.description}</p>
+            <a href={service.href} class="mt-5 inline-block font-bold text-brand hover:text-brand-dark">Ver servicio →</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-white">
+    <div class="container-g max-w-3xl">
+      <h2 class="text-3xl font-extrabold text-navy md:text-4xl">Preguntas frecuentes</h2>
+      <div class="mt-8 grid gap-3">
+        {faqs.map((item) => (
+          <details class="rounded-2xl border border-black/10 bg-white p-5">
+            <summary class="cursor-pointer font-bold text-navy">{item.q}</summary>
+            <p class="mt-3 text-muted">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad bg-navy text-white">
+    <div class="container-g grid items-center gap-6 md:grid-cols-[1fr_auto]">
+      <div>
+        <p class="font-bold uppercase tracking-wide text-accent">Aplicación</p>
+        <h2 class="mt-2 text-3xl font-extrabold md:text-4xl">¿Quieres revisar si cumples los requisitos?</h2>
+        <p class="mt-4 max-w-2xl text-white/75">
+          Escríbenos por WhatsApp y un asesor te ayuda a identificar el perfil correcto y los documentos que debes preparar.
+        </p>
+      </div>
+      <WhatsAppButton href={WA.cursosCertificacion} label="Hablar con un asesor" source="certificaciones-final" />
+    </div>
+  </section>
+</BaseLayout>

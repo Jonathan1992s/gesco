@@ -1,0 +1,81 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { WA } from '@/data/whatsapp';
+import { breadcrumbSchema } from '@/data/schema';
+import WhatsAppButton from '@/components/global/WhatsAppButton.astro';
+
+const seo = seoByPath['/contacto/'];
+const canonical = `${SITE.url}/contacto/`;
+const schema = breadcrumbSchema([{ label: 'Inicio', href: '/' }, { label: 'Contacto', href: '/contacto/' }]);
+
+const errorCode = Astro.url.searchParams.get('error');
+const errorMsg: Record<string, string> = {
+  rate:   'Demasiados intentos seguidos. Espera unos minutos antes de volver a enviar.',
+  fields: 'Completa todos los campos requeridos.',
+  email:  'Ingresa un correo electrónico válido.',
+  send:   'No pudimos enviar tu mensaje. Intenta nuevamente o escríbenos por WhatsApp.',
+  config: 'El formulario no está disponible en este momento. Escríbenos por WhatsApp.',
+};
+const error = errorCode ? (errorMsg[errorCode] ?? 'Ocurrió un error. Intenta nuevamente.') : null;
+---
+
+<BaseLayout title={seo.title} description={seo.description} canonical={canonical} schema={schema}>
+  <section class="bg-surface py-14 md:py-20">
+    <div class="container-g grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+      <div>
+        <p class="font-bold uppercase tracking-wide text-brand">Contacto</p>
+        <h1 class="mt-3 text-4xl font-extrabold text-navy md:text-5xl">Hablemos sobre tu ruta de preparación</h1>
+        <p class="mt-5 text-lg text-muted">Nuestra sede está en Quito y las clases se dictan online para estudiantes de todo Ecuador.</p>
+        <div class="mt-7">
+          <WhatsAppButton href={WA.contacto} label="Escribir por WhatsApp" source="contacto" />
+        </div>
+        <div class="mt-8 rounded-2xl bg-white p-6 shadow-sm">
+          <p class="font-bold text-navy">{SITE.address}</p>
+          <p class="mt-2 text-muted">{SITE.phone}</p>
+          <p class="text-muted">{SITE.email}</p>
+        </div>
+      </div>
+
+      <form action="/api/contacto/" method="POST" class="rounded-3xl bg-white p-6 shadow-xl">
+        {/* Honeypot anti-spam */}
+        <label class="hidden" aria-hidden="true">
+          Sitio web
+          <input name="website" tabindex="-1" autocomplete="off" />
+        </label>
+
+        {error && (
+          <p class="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700" role="alert">
+            {error}
+          </p>
+        )}
+
+        <label class="grid gap-2 font-semibold text-brand">
+          Nombre
+          <input required name="nombre" autocomplete="name" aria-required="true" aria-invalid={errorCode === 'fields' ? 'true' : undefined} class="min-h-11 rounded-xl border border-black/10 px-4 py-3 font-normal" />
+        </label>
+        <label class="mt-4 grid gap-2 font-semibold text-navy">
+          Email
+          <input required type="email" name="email" autocomplete="email" aria-required="true" aria-invalid={errorCode === 'email' || errorCode === 'fields' ? 'true' : undefined} class="min-h-11 rounded-xl border border-black/10 px-4 py-3 font-normal" />
+        </label>
+        <label class="mt-4 grid gap-2 font-semibold text-navy">
+          Teléfono
+          <input name="telefono" autocomplete="tel" class="min-h-11 rounded-xl border border-black/10 px-4 py-3 font-normal" />
+        </label>
+        <label class="mt-4 grid gap-2 font-semibold text-navy">
+          Mensaje
+          <textarea required name="mensaje" rows="5" aria-required="true" aria-invalid={errorCode === 'fields' ? 'true' : undefined} class="rounded-xl border border-black/10 px-4 py-3 font-normal"></textarea>
+        </label>
+        <button
+          type="submit"
+          class="solid-cta mt-6 min-h-11 w-full rounded-full bg-brand px-5 py-3 font-bold text-white! hover:bg-brand-dark"
+        >
+          Enviar mensaje
+        </button>
+        <p class="mt-3 text-center text-xs text-muted">
+          Respondemos en menos de 24 horas en días hábiles.
+        </p>
+      </form>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,19 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '@/components/global/Breadcrumbs.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  schema?: unknown;
+  pageName: string;
+}
+
+const { title, description, canonical, schema, pageName } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} type="article" schema={schema}>
+  <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Blog', href: '/blog/' }, { label: pageName, href: new URL(canonical).pathname }]} />
+  <slot />
+</BaseLayout>

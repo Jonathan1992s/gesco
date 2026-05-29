@@ -1,0 +1,248 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { breadcrumbSchema } from '@/data/schema';
+
+const seo = seoByPath['/publicaciones/'];
+const canonical = `${SITE.url}/publicaciones/`;
+const schema = breadcrumbSchema([
+  { label: 'Inicio', href: '/' },
+  { label: 'Publicaciones', href: '/publicaciones/' },
+]);
+
+const revistas = (await getCollection('publicaciones')).sort(
+  (a, b) => b.data.numero - a.data.numero,
+);
+
+const years = [...new Set(revistas.map((r) => r.data.year))].sort((a, b) => b - a);
+const featured = revistas.slice(0, 2);
+const archive = revistas.slice(2);
+---
+
+<BaseLayout title={seo.title} description={seo.description} canonical={canonical} schema={schema}>
+
+  <!-- ── HERO ─────────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-navy py-20 md:py-28">
+    <!-- Watermark NJ -->
+    <span aria-hidden="true"
+      class="pointer-events-none absolute -right-8 -top-6 select-none font-black text-white/[0.04] text-[22rem] leading-none tracking-tighter">
+      NJ
+    </span>
+    <div class="container-g relative">
+      <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand">Corporación para la Gestión del Conocimiento</p>
+      <h1 class="mt-3 text-5xl font-extrabold leading-tight text-white md:text-6xl">
+        Revista<br class="hidden sm:block" /> Nueva<br class="hidden sm:block" /> Jurisprudencia
+      </h1>
+      <p class="mt-5 max-w-lg text-base text-white/55">
+        Análisis jurídico, doctrina y actualidad legal del Ecuador. Publicación mensual de referencia para profesionales del derecho.
+      </p>
+      <!-- Contador de ediciones -->
+      <div class="mt-10 flex flex-wrap gap-8">
+        <div>
+          <p class="text-3xl font-extrabold text-white">{revistas.length}</p>
+          <p class="text-xs text-white/40 uppercase tracking-wider mt-0.5">Ediciones</p>
+        </div>
+        <div>
+          <p class="text-3xl font-extrabold text-white">{years.length}</p>
+          <p class="text-xs text-white/40 uppercase tracking-wider mt-0.5">Años</p>
+        </div>
+        <div>
+          <p class="text-3xl font-extrabold text-white">NJ {revistas[0].data.numero}</p>
+          <p class="text-xs text-white/40 uppercase tracking-wider mt-0.5">Última edición</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FILTRO ─────────────────────────────────────────────────── -->
+  <div class="sticky top-[79px] z-40 border-b border-black/8 bg-white/95 backdrop-blur">
+    <div class="container-g flex items-center gap-2 overflow-x-auto py-3 scrollbar-none">
+      <span class="shrink-0 text-xs font-semibold uppercase tracking-wider text-muted pr-2">Filtrar:</span>
+      <button
+        data-filter="all"
+        class="filter-btn shrink-0 rounded-full bg-navy px-4 py-1.5 text-xs font-bold text-white transition-all"
+      >Todas</button>
+      {years.map((y) => (
+        <button
+          data-filter={String(y)}
+          class="filter-btn shrink-0 rounded-full border border-black/12 px-4 py-1.5 text-xs font-bold text-navy transition-all hover:bg-surface"
+        >{y}</button>
+      ))}
+    </div>
+  </div>
+
+  <!-- ── FEATURED (últimas 2) ────────────────────────────────────── -->
+  <section class="bg-white pt-10 pb-4">
+    <div class="container-g">
+      <p class="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-muted">Últimas ediciones</p>
+      <div class="grid gap-5 sm:grid-cols-2">
+        {featured.map((r) => {
+          const slug = r.id.replace(/\.mdx$/, '');
+          return (
+            <article
+              data-year={r.data.year}
+              data-card-wrapper
+              class="card-reveal group relative flex min-h-[300px] flex-col overflow-hidden rounded-2xl bg-navy p-7 ring-1 ring-white/8 transition-all duration-300 hover:-translate-y-1 hover:ring-brand/40 hover:shadow-2xl hover:shadow-brand/15"
+            >
+              {/* Ghost number */}
+              <span aria-hidden="true"
+                class="pointer-events-none absolute -bottom-6 -right-3 select-none font-black text-white/[0.06] text-[10rem] leading-none">
+                {r.data.numero}
+              </span>
+
+              {/* Top meta */}
+              <div class="relative flex items-start justify-between gap-3">
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-brand/20 px-3 py-1 text-xs font-extrabold tracking-wide text-brand">
+                  N.° {r.data.numero}
+                </span>
+                <span class="text-xs font-medium text-white/40">{r.data.mes} {r.data.year}</span>
+              </div>
+
+              {/* Análisis principal */}
+              <div class="relative mt-auto pt-8">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-2">Análisis principal</p>
+                <h2 class="text-xl font-bold leading-snug text-white">{r.data.analisis}</h2>
+                <p class="mt-1 text-xs text-white/50">— {r.data.autor}</p>
+              </div>
+
+              {/* Temas */}
+              <div class="relative mt-4 flex flex-wrap gap-1.5">
+                {r.data.temas.map((t: string) => (
+                  <span class="rounded-md bg-white/[0.07] px-2.5 py-1 text-[11px] font-medium text-white/55">{t}</span>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <div class="relative mt-5 flex">
+                <a
+                  href={`/publicaciones/${slug}/`}
+                  class="solid-cta inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-bold text-white transition-all duration-200 hover:bg-brand-dark"
+                  aria-label={`Leer edición NJ ${r.data.numero}`}
+                >
+                  <svg aria-hidden="true" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <span class="hidden sm:inline">Leer edición</span>
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ARCHIVO ─────────────────────────────────────────────────── -->
+  <section class="bg-white pt-4 pb-20">
+    <div class="container-g">
+      <p class="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-muted">Archivo</p>
+      <div class="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+        {archive.map((r) => {
+          const slug = r.id.replace(/\.mdx$/, '');
+          return (
+            <article
+              data-year={r.data.year}
+              data-card-wrapper
+              class="card-reveal group relative flex flex-col overflow-hidden rounded-xl bg-navy p-5 ring-1 ring-white/8 transition-all duration-300 hover:-translate-y-1 hover:ring-brand/40 hover:shadow-xl hover:shadow-brand/10"
+            >
+              {/* Ghost number */}
+              <span aria-hidden="true"
+                class="pointer-events-none absolute -bottom-4 -right-1 select-none font-black text-white/[0.06] text-[5.5rem] leading-none">
+                {r.data.numero}
+              </span>
+
+              <div class="relative">
+                <span class="text-[10px] font-extrabold tracking-widest text-brand">N.° {r.data.numero}</span>
+                <p class="text-[10px] text-white/40 mt-0.5">{r.data.mes} {r.data.year}</p>
+              </div>
+
+              <h2 class="relative mt-3 text-sm font-bold leading-snug text-white line-clamp-3 flex-1">
+                {r.data.analisis}
+              </h2>
+
+              <div class="relative mt-3 flex flex-wrap gap-1">
+                {r.data.temas.slice(0, 2).map((t: string) => (
+                  <span class="rounded bg-white/[0.07] px-2 py-0.5 text-[10px] text-white/50">{t}</span>
+                ))}
+              </div>
+
+              <div class="relative mt-4 flex">
+                <a
+                  href={`/publicaciones/${slug}/`}
+                  class="solid-cta inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-bold text-white transition-all duration-200 hover:bg-brand-dark"
+                  aria-label={`Leer edición NJ ${r.data.numero}`}
+                >
+                  <svg aria-hidden="true" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <span class="hidden sm:inline">Leer edición</span>
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .card-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease, translate 0.3s ease, ring-color 0.3s ease;
+  }
+  .card-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { scrollbar-width: none; }
+</style>
+
+<script>
+  function initPublicaciones() {
+    // Reveal on scroll — use rootMargin so cards near viewport trigger immediately
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting) {
+          (e.target as HTMLElement).classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      }),
+      { threshold: 0.05, rootMargin: '0px 0px 100px 0px' },
+    );
+
+    // rAF ensures layout is complete after ViewTransitions paint
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.card-reveal').forEach((el) => observer.observe(el));
+    });
+
+    // Year filter
+    const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const wrappers = document.querySelectorAll<HTMLElement>('[data-card-wrapper]');
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter!;
+        filterBtns.forEach((b) => {
+          const active = b === btn;
+          b.classList.toggle('bg-navy', active);
+          b.classList.toggle('text-white', active);
+          b.classList.toggle('text-navy', !active);
+          b.classList.toggle('border-black/12', !active);
+          b.classList.toggle('border-transparent', active);
+        });
+        wrappers.forEach((w) => {
+          const show = filter === 'all' || w.dataset.year === filter;
+          w.style.display = show ? '' : 'none';
+        });
+      });
+    });
+  }
+
+  // Run on first load and after every ViewTransitions navigation
+  document.addEventListener('astro:page-load', initPublicaciones);
+</script>

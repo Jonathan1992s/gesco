@@ -1,0 +1,29 @@
+---
+import ProgramLayout from '@/layouts/ProgramLayout.astro';
+import ParentTrustBlock from '@/components/home/ParentTrustBlock.astro';
+import FAQAccordion from '@/components/program/FAQAccordion.astro';
+import ProgramCTA from '@/components/program/ProgramCTA.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { generalFaqs } from '@/data/faqs';
+import { breadcrumbSchema, faqSchema } from '@/data/schema';
+
+const seo = seoByPath['/para-padres/'];
+const canonical = `${SITE.url}/para-padres/`;
+const schema = [
+  faqSchema(generalFaqs),
+  breadcrumbSchema([{ label: 'Inicio', href: '/' }, { label: 'Para padres', href: '/para-padres/' }]),
+];
+---
+
+<ProgramLayout title={seo.title} description={seo.description} canonical={canonical} pageName="Para padres" schema={schema}>
+  <section class="bg-surface py-14 md:py-20">
+    <div class="container-g max-w-3xl">
+      <p class="font-bold uppercase tracking-wide text-brand">Acompañamiento familiar</p>
+      <h1 class="mt-3 text-4xl font-extrabold text-navy md:text-5xl">Preuniversitario online para su hijo</h1>
+      <p class="mt-5 text-lg text-muted">Acompañamos a cada estudiante con diagnóstico, clases online en vivo, Plataforma Gesco, simuladores, seguimiento académico y orientación vocacional.</p>
+    </div>
+  </section>
+  <ParentTrustBlock />
+  <FAQAccordion items={generalFaqs} />
+  <ProgramCTA waKey="padres" source="padres-final" />
+</ProgramLayout>

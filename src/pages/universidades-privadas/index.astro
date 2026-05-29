@@ -1,0 +1,31 @@
+﻿---
+import ProgramLayout from '@/layouts/ProgramLayout.astro';
+import ProgramHero from '@/components/program/ProgramHero.astro';
+import ProgramBenefits from '@/components/program/ProgramBenefits.astro';
+import CurriculumGrid from '@/components/program/CurriculumGrid.astro';
+import FAQAccordion from '@/components/program/FAQAccordion.astro';
+import ProgramCTA from '@/components/program/ProgramCTA.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { getProgram } from '@/data/programs';
+import { programFaqs } from '@/data/faqs';
+import { breadcrumbSchema, courseSchema, faqSchema } from '@/data/schema';
+
+const program = getProgram('universidades-privadas');
+if (!program) throw new Error('Programa universidades-privadas no encontrado');
+const seo = seoByPath['/universidades-privadas/'];
+const canonical = `${SITE.url}/universidades-privadas/`;
+const faqs = programFaqs.privadas;
+const schema = [
+  courseSchema(program.name, program.description, { courseMode: 'online' }),
+  faqSchema(faqs),
+  breadcrumbSchema([{ label: 'Inicio', href: '/' }, { label: program.name, href: '/universidades-privadas/' }]),
+];
+---
+
+<ProgramLayout title={seo.title} description={seo.description} canonical={canonical} pageName={program.name} schema={schema}>
+  <ProgramHero program={program} />
+  <ProgramBenefits items={program.benefits} />
+  <CurriculumGrid items={program.curriculum} />
+  <FAQAccordion items={faqs} />
+  <ProgramCTA waKey={program.waKey} source="privadas-final" />
+</ProgramLayout>

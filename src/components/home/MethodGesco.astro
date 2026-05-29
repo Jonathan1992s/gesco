@@ -1,0 +1,47 @@
+---
+const steps = [
+  'Diagnóstico inicial',
+  'Plan de estudio personalizado',
+  'Clases en vivo',
+  'Material y Plataforma Gesco',
+  'Simuladores reales',
+  'Refuerzos por materia',
+  'Orientación vocacional',
+];
+---
+
+<section class="section-pad bg-surface">
+  <div class="container-g">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="font-bold uppercase tracking-wide text-brand">Método GESCO</p>
+      <h2 class="mt-2 text-3xl font-extrabold text-navy md:text-4xl">Una ruta clara hasta la postulación</h2>
+      <p class="mt-4 text-muted">No se trata solo de recibir clases. Se trata de tener una ruta clara, seguimiento y práctica real antes del proceso de admisión.</p>
+    </div>
+    <ol id="method-steps" class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {steps.map((step, index) => (
+        <li class="method-step rounded-2xl bg-white p-5 opacity-0 shadow-sm ring-1 ring-black/5 transition duration-500">
+          <span class="solid-cta flex h-10 w-10 items-center justify-center rounded-full bg-brand text-sm font-extrabold">{index + 1}</span>
+          <h3 class="mt-4 text-lg font-extrabold text-navy">{step}</h3>
+        </li>
+      ))}
+      <li class="method-step rounded-2xl bg-navy p-5 opacity-0 shadow-sm transition duration-500 md:col-span-2 lg:col-span-4">
+        <span class="font-bold text-accent">Resultado</span>
+        <h3 class="mt-2 text-2xl font-extrabold text-white">Postulación a la universidad</h3>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<script>
+  const steps = document.querySelectorAll('.method-step');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.remove('opacity-0');
+      entry.target.classList.add('translate-y-0');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.2 });
+
+  steps.forEach((step) => observer.observe(step));
+</script>

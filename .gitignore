@@ -1,0 +1,20 @@
+# Dependencias
+node_modules/
+
+# Build output
+dist/
+.netlify/
+
+# Variables de entorno — NUNCA subir al repo
+.env
+.env.local
+.env.production
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+*.suo
+*.user

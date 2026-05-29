@@ -1,0 +1,21 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { WA } from '@/data/whatsapp';
+import WhatsAppButton from '@/components/global/WhatsAppButton.astro';
+
+const seo = seoByPath['/gracias/'];
+---
+
+<BaseLayout title={seo.title} description={seo.description} canonical={`${SITE.url}/gracias/`} noindex>
+  <section class="section-pad bg-surface">
+    <div class="container-g max-w-2xl text-center">
+      <p class="font-bold uppercase tracking-wide text-brand">Mensaje recibido</p>
+      <h1 class="mt-3 text-4xl font-extrabold text-navy md:text-5xl">Gracias por contactar a GESCO</h1>
+      <p class="mt-5 text-lg text-muted">Un asesor revisará tu mensaje. Si necesitas una respuesta más rápida, también puedes escribirnos por WhatsApp.</p>
+      <div class="mt-8">
+        <WhatsAppButton href={WA.contacto} label="Escribir por WhatsApp" source="gracias" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

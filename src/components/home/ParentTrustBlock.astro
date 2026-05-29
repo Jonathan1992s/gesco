@@ -1,0 +1,36 @@
+---
+import { WA } from '@/data/whatsapp';
+import WhatsAppButton from '@/components/global/WhatsAppButton.astro';
+
+const bullets = [
+  'Diagnóstico inicial',
+  'Clases online en vivo',
+  'Plataforma Gesco para estudiar y practicar',
+  'Comunicación directa por WhatsApp',
+  'Orientación vocacional incluida',
+  'Refuerzos según dificultad detectada',
+];
+---
+
+<section class="section-pad bg-white">
+  <div class="container-g grid items-center gap-10 lg:grid-cols-2">
+    <div>
+      <p class="font-bold uppercase tracking-wide text-brand">Para familias</p>
+      <h2 class="mt-2 text-3xl font-extrabold text-navy md:text-4xl">Padres tranquilos, estudiantes acompañados</h2>
+      <p class="mt-5 text-lg text-muted">
+        Sabemos que este proceso genera ansiedad en casa. Por eso GESCO trabaja online con planificación, docentes especializados, simuladores, refuerzos y acompañamiento cercano para que cada estudiante avance con mayor seguridad desde cualquier ciudad del país.
+      </p>
+      <div class="mt-7">
+        <WhatsAppButton href={WA.padres} label="Hablar con un asesor" source="parent-trust" />
+      </div>
+    </div>
+    <ul class="grid gap-3 rounded-3xl bg-surface p-6">
+      {bullets.map((bullet) => (
+        <li class="flex gap-3 rounded-2xl bg-white p-4 font-semibold text-navy">
+          <span class="text-success" aria-hidden="true">✓</span>
+          {bullet}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

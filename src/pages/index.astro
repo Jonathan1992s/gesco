@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HeroHome from '@/components/home/HeroHome.astro';
+import RouteSelector from '@/components/home/RouteSelector.astro';
+import MethodGesco from '@/components/home/MethodGesco.astro';
+import ParentTrustBlock from '@/components/home/ParentTrustBlock.astro';
+import StatsBand from '@/components/home/StatsBand.astro';
+import ProgramsGrid from '@/components/home/ProgramsGrid.astro';
+import Testimonials from '@/components/home/Testimonials.astro';
+import UniversitiesLogos from '@/components/home/UniversitiesLogos.astro';
+import FinalCTA from '@/components/home/FinalCTA.astro';
+import LeadQuiz from '@/components/interactive/LeadQuiz';
+import { SITE, seoByPath } from '@/data/site';
+import { itemListSchema, organizationSchema } from '@/data/schema';
+import { programs } from '@/data/programs';
+
+const seo = seoByPath['/'];
+const programPrices: Record<string, string> = {
+  preuniversitario: '350',
+  'universidades-publicas': '350',
+  'universidades-privadas': '175',
+};
+const featuredPrograms = programs
+  .filter((program) => ['preuniversitario', 'universidades-publicas', 'universidades-privadas'].includes(program.slug))
+  .map((program) => ({
+    name: program.name,
+    description: program.description,
+    url: `/${program.slug}/`,
+    price: programPrices[program.slug],
+  }));
+const schema = [...organizationSchema, itemListSchema(featuredPrograms)];
+---
+
+<BaseLayout title={seo.title} description={seo.description} canonical={`${SITE.url}/`} schema={schema}>
+  <HeroHome />
+  <RouteSelector />
+  <StatsBand />
+  <MethodGesco />
+  <ParentTrustBlock />
+  <ProgramsGrid />
+  <section class="section-pad bg-surface">
+    <div class="container-g grid items-center gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <div>
+        <p class="font-bold uppercase tracking-wide text-brand">Diagnóstico rápido</p>
+        <h2 class="mt-2 text-3xl font-extrabold text-navy md:text-4xl">Responde 4 preguntas y recibe una ruta inicial</h2>
+        <p class="mt-4 text-muted">Este quiz no reemplaza la asesoría, pero ayuda a orientar el primer mensaje para que el equipo GESCO te responda con más contexto.</p>
+      </div>
+      <LeadQuiz client:visible />
+    </div>
+  </section>
+  <Testimonials />
+  <UniversitiesLogos />
+  <FinalCTA />
+</BaseLayout>

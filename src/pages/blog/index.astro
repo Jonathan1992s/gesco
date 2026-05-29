@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BlogHero from '@/components/blog/BlogHero.astro';
+import BlogCard from '@/components/blog/BlogCard.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { breadcrumbSchema } from '@/data/schema';
+
+const seo = seoByPath['/blog/'];
+const posts = (await getCollection('blog')).sort((a, b) => Date.parse(b.data.pubDate) - Date.parse(a.data.pubDate));
+const schema = breadcrumbSchema([{ label: 'Inicio', href: '/' }, { label: 'Blog', href: '/blog/' }]);
+---
+
+<BaseLayout title={seo.title} description={seo.description} canonical={`${SITE.url}/blog/`} schema={schema}>
+  <BlogHero title="Guías para ingresar a la universidad en Ecuador" description={seo.description} />
+  <section class="section-pad bg-white">
+    <div class="container-g grid gap-6 md:grid-cols-2">
+      {posts.map((post) => {
+        const slug = post.id.replace(/\.mdx$/, '');
+        return (
+          <BlogCard
+            title={post.data.title}
+            description={post.data.description}
+            href={`/blog/${slug}/`}
+            category={post.data.category}
+            readTime={post.data.readTime}
+          />
+        );
+      })}
+    </div>
+  </section>
+</BaseLayout>

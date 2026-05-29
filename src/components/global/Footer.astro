@@ -1,0 +1,65 @@
+---
+import { SITE } from '@/data/site';
+import { navItems, servicesItems } from '@/data/navigation';
+---
+
+<footer class="bg-navy pb-24 pt-14 text-white lg:pb-10">
+  <div class="container-g grid gap-10 md:grid-cols-2 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
+    <div>
+      <img src={SITE.logo} alt="GESCO Preuniversitario" width="150" height="50" class="mb-5 rounded bg-white p-2" loading="lazy" />
+      <p class="max-w-sm text-white/75">{SITE.description}</p>
+      <address class="mt-4 not-italic text-white/75">{SITE.address}</address>
+      <p class="mt-2 text-white/75">{SITE.phone} · {SITE.email}</p>
+    </div>
+
+    <div>
+      <h2 class="mb-4 text-lg font-bold">Preuniversitario</h2>
+      <ul class="grid gap-2 text-white/75">
+        {navItems.slice(0, 6).map((item) => (
+          <li><a class="hover:text-accent" href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="mb-4 text-lg font-bold">Más servicios</h2>
+      <ul class="grid gap-2 text-white/75">
+        {servicesItems.map((item) => (
+          <li><a class="hover:text-accent" href={item.href}>{item.label}</a></li>
+        ))}
+        <li>
+          <a
+            class="hover:text-accent"
+            href="https://plataformagesco.com/course/index.php?categoryid=5"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Plataforma Gesco ↗
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="mb-4 text-lg font-bold">Canales oficiales</h2>
+      <ul class="grid gap-3 text-white/75">
+        <li>
+          <span class="block text-sm font-bold uppercase tracking-wide text-white/45">Teléfono</span>
+          <a class="hover:text-accent" href={`tel:${SITE.whatsapp}`}>{SITE.phone}</a>
+        </li>
+        <li>
+          <span class="block text-sm font-bold uppercase tracking-wide text-white/45">Correo</span>
+          <a class="break-all hover:text-accent" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </li>
+      </ul>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href={SITE.facebook} target="_blank" rel="noopener noreferrer" class="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold hover:border-accent hover:text-accent">Facebook</a>
+        <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" class="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold hover:border-accent hover:text-accent">Instagram</a>
+      </div>
+    </div>
+  </div>
+  <div class="container-g mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5 text-sm text-white/60">
+    <span>© {new Date().getFullYear()} GESCO. Todos los derechos reservados.</span>
+    <a href="/verificar/" class="hover:text-white/90 transition-colors">Verificar documento</a>
+  </div>
+</footer>

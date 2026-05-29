@@ -1,0 +1,466 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { breadcrumbSchema } from '@/data/schema';
+import type { ResultadoChaside } from '@/lib/supabase';
+
+const seo = seoByPath['/verificar/'];
+const canonical = `${SITE.url}/verificar/`;
+const schema = breadcrumbSchema([
+  { label: 'Inicio', href: '/' },
+  { label: 'Verificar documento', href: '/verificar/' },
+]);
+
+// ── Constantes (usadas en template) ──────────────────────────────────
+const AREA_NAMES: Record<string, string> = {
+  C: 'Ciencias Administrativas y Contables',
+  H: 'Humanísticas y Sociales',
+  A: 'Artísticas',
+  S: 'Medicina y Ciencias de la Salud',
+  I: 'Ingeniería y Computación',
+  D: 'Defensa y Seguridad',
+  E: 'Ciencias Exactas y Agrarias',
+};
+
+const DOC_TYPES: Record<string, string> = {
+  CH: 'Informe Vocacional CHASIDE',
+  CF: 'Certificado de Formación',
+  CE: 'Certificado de Educación Continua',
+};
+
+const MONTHS = ['', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+const CODE_RE = /^GESCO-([A-Z]{2})-(\d{4})(\d{2})(\d{2})-([A-Z0-9]{6})$/;
+
+function isoToEs(iso: string): string {
+  const [y, m, d] = iso.split('-').map(Number);
+  return `${d} de ${MONTHS[m] ?? m} de ${y}`;
+}
+
+function codeToDate(code: string): string {
+  const m = CODE_RE.exec(code);
+  if (!m) return '—';
+  const [, , y, month, d] = m;
+  return `${parseInt(d, 10)} de ${MONTHS[parseInt(month, 10)] ?? month} de ${y}`;
+}
+
+function codeToType(code: string): string {
+  const m = CODE_RE.exec(code);
+  const t = m?.[1] ?? '';
+  return DOC_TYPES[t] ?? (t ? `Documento GESCO ${t}` : 'Documento GESCO');
+}
+
+function fmtArea(codigo: string | null, nombre: string | null, puntaje: number | null): string {
+  if (!codigo) return '—';
+  const name = nombre ?? AREA_NAMES[codigo] ?? codigo;
+  return `${codigo} — ${name}${puntaje != null ? `  ·  ${puntaje}/14 pts` : ''}`;
+}
+
+// ── Leer parámetros de la URL (server-side) ──────────────────────────
+const sp   = Astro.url.searchParams;
+const code = sp.get('c')?.trim().toUpperCase() ?? '';
+
+// Parámetros del QR generado en el PDF — sanitizados defensivamente
+function safeDecodeParam(raw: string | null, maxLen = 120): string {
+  if (!raw) return '';
+  try { return decodeURIComponent(raw).slice(0, maxLen); } catch { return ''; }
+}
+const VALID_AREA_CODES = new Set(['C','H','A','S','I','D','E']);
+function safeAreaCode(raw: string | null): string {
+  const v = (raw ?? '').toUpperCase().trim();
+  return VALID_AREA_CODES.has(v) ? v : '';
+}
+function safeScore(raw: string | null): string {
+  const n = parseInt(raw ?? '', 10);
+  return Number.isFinite(n) && n >= 0 && n <= 14 ? String(n) : '';
+}
+
+const qrNombre = safeDecodeParam(sp.get('n'));
+const qrFecha  = safeDecodeParam(sp.get('d'), 60);
+const qrA1     = safeAreaCode(sp.get('a1'));
+const qrS1     = safeScore(sp.get('s1'));
+const qrA2     = safeAreaCode(sp.get('a2'));
+const qrS2     = safeScore(sp.get('s2'));
+const hasQr    = Boolean(qrNombre || qrA1);
+
+// ── Tipos de estado ───────────────────────────────────────────────────
+type State = 'entry' | 'db-ok' | 'qr-ok' | 'qr-warn' | 'partial' | 'not-found' | 'bad-format' | 'db-error';
+
+let state: State = 'entry';
+let dbRecord: ResultadoChaside | null = null;
+
+if (code) {
+  if (!CODE_RE.test(code)) {
+    state = 'bad-format';
+  } else {
+    const isConfigured = Boolean(import.meta.env.SUPABASE_URL && import.meta.env.SUPABASE_SERVICE_ROLE_KEY);
+
+    if (isConfigured) {
+      try {
+        const { verificarCodigo } = await import('@/lib/supabase');
+        dbRecord = await verificarCodigo(code);
+
+        if (dbRecord) {
+          state = 'db-ok';                          // Encontrado en BD ✓
+        } else if (hasQr) {
+          state = 'qr-warn';                        // No en BD, pero tiene datos de QR
+        } else {
+          state = 'not-found';                      // No existe en BD ni hay QR
+        }
+      } catch {
+        state = hasQr ? 'qr-ok' : 'db-error';      // Error de BD → fallback
+      }
+    } else {
+      state = hasQr ? 'qr-ok' : 'partial';         // Sin Supabase → modo degradado
+    }
+  }
+}
+---
+
+<BaseLayout title={seo.title} description={seo.description} canonical={canonical} schema={schema}>
+
+  <!-- ── HERO ──────────────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-navy py-16 md:py-20">
+    <span aria-hidden="true"
+      class="pointer-events-none absolute -right-6 -top-4 select-none font-black text-white/[0.04] text-[18rem] leading-none tracking-tighter">
+      VF
+    </span>
+    <div class="container-g relative">
+      <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand">Corporación para la Gestión del Conocimiento</p>
+      <h1 class="mt-3 text-4xl font-extrabold leading-tight text-white md:text-5xl">
+        Verificador<br class="hidden sm:block" /> de documentos
+      </h1>
+      <p class="mt-4 max-w-lg text-sm text-white/55">
+        Comprueba la autenticidad de informes vocacionales y certificados emitidos por GESCO mediante el QR del documento o ingresando el código manualmente.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── ÁREA PRINCIPAL ────────────────────────────────────────────── -->
+  <section class="bg-surface py-14">
+    <div class="container-g">
+      <div class="mx-auto max-w-2xl">
+
+        <!-- ── ESTADO: ENTRADA (no hay ?c en la URL) ── -->
+        {state === 'entry' && (
+          <div class="space-y-6">
+            <div class="rounded-3xl bg-white p-8 shadow ring-1 ring-black/5">
+              <h2 class="text-xl font-extrabold text-navy">Ingresar código de documento</h2>
+              <p class="mt-1 text-sm text-muted">El código está impreso en la última página del documento, junto al código QR.</p>
+              <form method="GET" action="/verificar/" class="mt-5 flex flex-col gap-3 sm:flex-row">
+                <input
+                  id="vf-code-input"
+                  name="c"
+                  type="text"
+                  placeholder="GESCO-CH-YYYYMMDD-XXXXXX"
+                  autocomplete="off"
+                  spellcheck="false"
+                  required
+                  pattern="GESCO-[A-Z]{2}-[0-9]{8}-[A-Z0-9]{6}"
+                  title="Formato: GESCO-XX-AAAAMMDD-XXXXXX"
+                  class="min-h-11 flex-1 rounded-xl border border-black/10 px-4 py-3 font-mono text-sm uppercase tracking-wide text-navy placeholder:normal-case placeholder:tracking-normal placeholder:text-muted/50 focus:border-brand focus:outline-none"
+                  aria-label="Código de verificación"
+                />
+                <button type="submit"
+                  class="solid-cta min-h-11 shrink-0 rounded-xl bg-brand px-6 py-3 text-sm font-bold text-white! hover:bg-brand-dark">
+                  Verificar
+                </button>
+              </form>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <div class="h-px flex-1 bg-black/10"></div>
+              <span class="text-xs font-bold uppercase tracking-widest text-muted">o</span>
+              <div class="h-px flex-1 bg-black/10"></div>
+            </div>
+
+            <div class="rounded-3xl bg-white p-8 shadow ring-1 ring-black/5">
+              <div class="flex items-start gap-5">
+                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-navy">
+                  <svg class="h-7 w-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    <path d="M14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-xl font-extrabold text-navy">Escanear código QR</h2>
+                  <p class="mt-1 text-sm text-muted">
+                    Abre la cámara de tu teléfono, apunta al QR en la última página del documento y la verificación se abre automáticamente.
+                  </p>
+                </div>
+              </div>
+              <div class="mt-5 grid gap-3 sm:grid-cols-3">
+                {(['Abre la cámara de tu teléfono', 'Apunta al QR en el documento', 'La verificación se abre sola'] as const).map((t, i) => (
+                  <div class="rounded-2xl bg-surface p-4 text-center text-sm">
+                    <span class="mb-2 flex h-7 w-7 mx-auto items-center justify-center rounded-full bg-brand text-xs font-extrabold text-white">{i + 1}</span>
+                    <p class="text-muted">{t}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <!-- ── VERIFICADO EN BASE DE DATOS (fuente autoritativa) ── -->
+        {state === 'db-ok' && dbRecord && (
+          <div class="space-y-5">
+            <div class="flex items-center gap-4 rounded-2xl bg-success/10 px-6 py-4 ring-1 ring-success/20">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-success">
+                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div>
+                <p class="font-extrabold text-success">Documento verificado</p>
+                <p class="text-sm text-success/70">Confirmado en la base de datos de Corporación para la Gestión del Conocimiento</p>
+              </div>
+            </div>
+
+            <div class="overflow-hidden rounded-3xl bg-navy shadow-xl">
+              <div class="border-b border-white/10 px-8 py-6">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-widest text-brand">{codeToType(code)}</p>
+                    <h2 class="mt-2 text-2xl font-extrabold text-white">{dbRecord.nombres} {dbRecord.apellidos}</h2>
+                    <span class="mt-1 inline-block rounded-full bg-success/20 px-3 py-0.5 text-xs font-bold text-success">
+                      Verificado en el sistema
+                    </span>
+                  </div>
+                  <img src="/img/logo-negativo.webp" alt="GESCO" width="100" height="35" class="mt-1 shrink-0 opacity-90" loading="lazy" />
+                </div>
+              </div>
+              <div class="grid gap-px bg-white/5 sm:grid-cols-2">
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Fecha de emisión</p>
+                  <p class="mt-1 font-semibold text-white">{isoToEs(dbRecord.fecha_emision)}</p>
+                </div>
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Código</p>
+                  <p class="mt-1 font-mono font-semibold text-brand">{dbRecord.codigo}</p>
+                </div>
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Área principal</p>
+                  <p class="mt-1 font-semibold text-white">{fmtArea(dbRecord.area1_codigo, dbRecord.area1_nombre, dbRecord.area1_puntaje)}</p>
+                </div>
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Área secundaria</p>
+                  <p class="mt-1 font-semibold text-white">{fmtArea(dbRecord.area2_codigo ?? null, dbRecord.area2_nombre ?? null, dbRecord.area2_puntaje ?? null)}</p>
+                </div>
+              </div>
+              <div class="px-8 py-4">
+                <p class="text-xs text-white/30">gescovirtual.com · +593 999 216 079 · gescocorporacion@gmail.com</p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-white p-5 ring-1 ring-black/5">
+              <p class="text-sm font-bold text-navy">Nota</p>
+              <p class="mt-1 text-sm text-muted">Este informe es <strong>orientativo</strong> y no constituye diagnóstico psicológico ni reemplaza la orientación vocacional profesional.</p>
+            </div>
+            <a href="/verificar/" class="block w-full rounded-2xl border border-black/10 py-3 text-center text-sm font-bold text-navy hover:bg-white transition-colors">
+              Verificar otro documento
+            </a>
+          </div>
+        )}
+
+        <!-- ── VERIFICADO POR QR (sin BD o BD sin configurar) ── -->
+        {(state === 'qr-ok' || state === 'qr-warn') && (
+          <div class="space-y-5">
+            {state === 'qr-warn' ? (
+              <div class="flex items-center gap-4 rounded-2xl bg-accent/15 px-6 py-4 ring-1 ring-accent/30">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent">
+                  <svg class="h-6 w-6 text-navy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div>
+                  <p class="font-extrabold text-navy">Datos del QR reconocidos</p>
+                  <p class="text-sm text-navy/60">El código no fue encontrado en la base de datos. Los datos provienen del QR del documento.</p>
+                </div>
+              </div>
+            ) : (
+              <div class="flex items-center gap-4 rounded-2xl bg-brand/10 px-6 py-4 ring-1 ring-brand/20">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand">
+                  <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div>
+                  <p class="font-extrabold text-brand">Documento reconocido</p>
+                  <p class="text-sm text-brand/70">Datos verificados mediante el código QR del documento original</p>
+                </div>
+              </div>
+            )}
+
+            <div class="overflow-hidden rounded-3xl bg-navy shadow-xl">
+              <div class="border-b border-white/10 px-8 py-6">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-widest text-brand">{codeToType(code)}</p>
+                    <h2 class="mt-2 text-2xl font-extrabold text-white">{qrNombre || '—'}</h2>
+                    <span class={`mt-1 inline-block rounded-full px-3 py-0.5 text-xs font-bold ${state === 'qr-warn' ? 'bg-accent/20 text-accent' : 'bg-brand/20 text-brand'}`}>
+                      {state === 'qr-warn' ? 'No encontrado en BD · datos del QR' : 'Verificado por QR del documento'}
+                    </span>
+                  </div>
+                  <img src="/img/logo-negativo.webp" alt="GESCO" width="100" height="35" class="mt-1 shrink-0 opacity-90" loading="lazy" />
+                </div>
+              </div>
+              <div class="grid gap-px bg-white/5 sm:grid-cols-2">
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Fecha de emisión</p>
+                  <p class="mt-1 font-semibold text-white">{qrFecha || codeToDate(code)}</p>
+                </div>
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Código</p>
+                  <p class="mt-1 font-mono font-semibold text-brand">{code}</p>
+                </div>
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Área principal</p>
+                  <p class="mt-1 font-semibold text-white">{qrA1 ? `${qrA1} — ${AREA_NAMES[qrA1] ?? qrA1}${qrS1 ? `  ·  ${qrS1}/14 pts` : ''}` : '—'}</p>
+                </div>
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Área secundaria</p>
+                  <p class="mt-1 font-semibold text-white">{qrA2 ? `${qrA2} — ${AREA_NAMES[qrA2] ?? qrA2}${qrS2 ? `  ·  ${qrS2}/14 pts` : ''}` : '—'}</p>
+                </div>
+              </div>
+              <div class="px-8 py-4">
+                <p class="text-xs text-white/30">gescovirtual.com · +593 999 216 079 · gescocorporacion@gmail.com</p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-white p-5 ring-1 ring-black/5">
+              <p class="text-sm font-bold text-navy">Nota</p>
+              <p class="mt-1 text-sm text-muted">Este informe es <strong>orientativo</strong> y no constituye diagnóstico psicológico ni reemplaza la orientación vocacional profesional.</p>
+            </div>
+            <a href="/verificar/" class="block w-full rounded-2xl border border-black/10 py-3 text-center text-sm font-bold text-navy hover:bg-white transition-colors">
+              Verificar otro documento
+            </a>
+          </div>
+        )}
+
+        <!-- ── CÓDIGO VÁLIDO PERO NO ENCONTRADO EN BD ── -->
+        {state === 'partial' && (
+          <div class="space-y-5">
+            <div class="flex items-center gap-4 rounded-2xl bg-brand/10 px-6 py-4 ring-1 ring-brand/20">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand">
+                <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div>
+                <p class="font-extrabold text-brand">Código reconocido</p>
+                <p class="text-sm text-brand/70">El formato del código corresponde a documentos emitidos por GESCO</p>
+              </div>
+            </div>
+            <div class="overflow-hidden rounded-3xl bg-navy shadow-xl">
+              <div class="border-b border-white/10 px-8 py-6">
+                <p class="text-xs font-bold uppercase tracking-widest text-brand">{codeToType(code)}</p>
+                <p class="mt-2 text-lg font-extrabold text-white">Documento emitido por GESCO</p>
+              </div>
+              <div class="grid gap-px bg-white/5 sm:grid-cols-2">
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Código</p>
+                  <p class="mt-1 font-mono font-semibold text-brand">{code}</p>
+                </div>
+                <div class="bg-navy px-8 py-5">
+                  <p class="text-xs font-bold uppercase tracking-wider text-white/35">Fecha de emisión</p>
+                  <p class="mt-1 font-semibold text-white">{codeToDate(code)}</p>
+                </div>
+              </div>
+              <div class="px-8 py-5">
+                <p class="text-xs font-bold uppercase tracking-wider text-white/35 mb-2">Para ver todos los datos del titular</p>
+                <p class="text-sm text-white/60">Escanea el código QR que aparece en la última página del documento original. El QR contiene el nombre, áreas vocacionales y puntajes.</p>
+              </div>
+            </div>
+            <a href="/verificar/" class="block w-full rounded-2xl border border-black/10 py-3 text-center text-sm font-bold text-navy hover:bg-white transition-colors">
+              Verificar otro código
+            </a>
+          </div>
+        )}
+
+        <!-- ── NO ENCONTRADO EN BD ── -->
+        {state === 'not-found' && (
+          <div class="space-y-4">
+            <div class="rounded-3xl bg-white p-10 shadow ring-1 ring-black/5 text-center">
+              <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+                <svg class="h-8 w-8 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/>
+                </svg>
+              </div>
+              <h2 class="mt-5 text-2xl font-extrabold text-navy">Documento no encontrado</h2>
+              <p class="mt-3 max-w-sm mx-auto text-muted">
+                El código <span class="font-mono font-bold text-navy">{code}</span> no existe en la base de datos. Si crees que es un error, contacta a GESCO.
+              </p>
+            </div>
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <a href="/verificar/" class="flex-1 rounded-2xl border border-black/10 py-3 text-center text-sm font-bold text-navy hover:bg-white transition-colors">
+                Intentar de nuevo
+              </a>
+              <a href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('Hola, necesito verificar un documento GESCO. Código: ' + code)}`}
+                target="_blank" rel="noopener noreferrer"
+                class="solid-cta flex-1 rounded-2xl bg-brand py-3 text-center text-sm font-bold text-white! hover:bg-brand-dark transition-colors">
+                Contactar a GESCO
+              </a>
+            </div>
+          </div>
+        )}
+
+        <!-- ── FORMATO INVÁLIDO ── -->
+        {(state === 'bad-format' || state === 'db-error') && (
+          <div class="space-y-4">
+            <div class="rounded-3xl bg-white p-10 shadow ring-1 ring-black/5 text-center">
+              <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+                <svg class="h-8 w-8 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/>
+                </svg>
+              </div>
+              <h2 class="mt-5 text-2xl font-extrabold text-navy">
+                {state === 'bad-format' ? 'Código no válido' : 'Error al verificar'}
+              </h2>
+              <p class="mt-3 max-w-sm mx-auto text-muted">
+                {state === 'bad-format'
+                  ? 'El código ingresado no tiene el formato correcto. Verifica que lo hayas copiado completo.'
+                  : 'Ocurrió un problema al consultar la base de datos. Intenta nuevamente en unos segundos.'}
+              </p>
+              {state === 'bad-format' && (
+                <p class="mt-2 text-xs text-muted">Formato esperado: <span class="font-mono font-bold text-navy">GESCO-XX-AAAAMMDD-XXXXXX</span></p>
+              )}
+            </div>
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <a href="/verificar/" class="flex-1 rounded-2xl border border-black/10 py-3 text-center text-sm font-bold text-navy hover:bg-white transition-colors">
+                Intentar de nuevo
+              </a>
+              <a href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('Hola, necesito verificar un documento de GESCO.')}`}
+                target="_blank" rel="noopener noreferrer"
+                class="solid-cta flex-1 rounded-2xl bg-brand py-3 text-center text-sm font-bold text-white! hover:bg-brand-dark transition-colors">
+                Contactar a GESCO
+              </a>
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PIE INFO ──────────────────────────────────────────────────── -->
+  <section class="border-t border-black/5 bg-white py-12">
+    <div class="container-g">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="text-xs font-bold uppercase tracking-widest text-muted">Corporación para la Gestión del Conocimiento</p>
+        <p class="mx-auto mt-3 max-w-md text-sm text-muted">
+          Institución educativa privada ecuatoriana especializada en preparación preuniversitaria, orientación vocacional y educación continua.
+        </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-4 text-sm">
+          <a href="/" class="font-semibold text-brand hover:text-brand-dark">gescovirtual.com</a>
+          <span class="text-muted">·</span>
+          <a href={`tel:${SITE.whatsapp}`} class="text-muted hover:text-navy">{SITE.phone}</a>
+          <span class="text-muted">·</span>
+          <a href={`mailto:${SITE.email}`} class="text-muted hover:text-navy">{SITE.email}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<!-- Solo JS mínimo: auto-uppercase en el input del formulario -->
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const input = document.getElementById('vf-code-input') as HTMLInputElement | null;
+    input?.addEventListener('input', () => { input.value = input.value.toUpperCase(); });
+  });
+</script>

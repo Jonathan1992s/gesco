@@ -1,0 +1,197 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/global/Breadcrumbs.astro';
+import WhatsAppButton from '@/components/global/WhatsAppButton.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { WA } from '@/data/whatsapp';
+import { programFaqs } from '@/data/faqs';
+import FAQAccordion from '@/components/program/FAQAccordion.astro';
+import { breadcrumbSchema, faqSchema } from '@/data/schema';
+
+const seo = seoByPath['/convenios/'];
+const canonical = `${SITE.url}/convenios/`;
+const faqs = programFaqs.convenios;
+const schema = [
+  faqSchema(faqs),
+  breadcrumbSchema([{ label: 'Inicio', href: '/' }, { label: 'Convenios GESCO', href: '/convenios/' }]),
+];
+
+const benefits = [
+  {
+    icon: 'users',
+    title: 'Acceso grupal a Plataforma Gesco',
+    desc: 'Toda tu institución accede a cursos, simuladores y materiales en una sola plataforma.',
+  },
+  {
+    icon: 'tag',
+    title: 'Precios institucionales',
+    desc: 'Tarifas especiales según el tamaño del grupo y el tipo de programa que la institución necesite.',
+  },
+  {
+    icon: 'chart',
+    title: 'Seguimiento y reportes grupales',
+    desc: 'Informes de avance por participante para que la institución tenga visibilidad del progreso.',
+  },
+  {
+    icon: 'award',
+    title: 'Certificaciones para participantes',
+    desc: 'Los participantes reciben certificados reconocidos que se suman a su hoja de vida.',
+  },
+];
+
+const types = [
+  'Colegios y unidades educativas',
+  'Empresas e instituciones privadas',
+  'Organizaciones sin fines de lucro',
+  'Municipios y entidades públicas',
+  'Asociaciones gremiales y profesionales',
+];
+---
+
+<BaseLayout title={seo.title} description={seo.description} canonical={canonical} schema={schema}>
+  <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Convenios GESCO', href: '/convenios/' }]} />
+
+  <!-- Hero -->
+  <section class="bg-surface py-16 md:py-20">
+    <div class="container-g grid items-center gap-10 lg:grid-cols-2">
+      <div>
+        <p class="font-bold uppercase tracking-wide text-brand">Alianzas institucionales</p>
+        <h1 class="mt-3 text-4xl font-extrabold leading-tight text-navy md:text-5xl">
+          Convenios GESCO para instituciones educativas y empresas
+        </h1>
+        <p class="mt-5 text-lg text-muted">
+          GESCO establece convenios con colegios, empresas e instituciones para ofrecer preparación universitaria,
+          educación continua y capacitación docente a sus estudiantes, docentes o empleados, con condiciones y precios institucionales.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <WhatsAppButton href={WA.convenios} label="Consultar convenio" source="convenios-hero" />
+          <a
+            href="https://plataformagesco.com/course/index.php?categoryid=5"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white px-5 py-3 text-sm font-semibold text-navy transition hover:bg-surface"
+          >
+            <svg aria-hidden="true" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+            Ver en Plataforma Gesco
+          </a>
+        </div>
+      </div>
+      <div class="flex min-h-80 items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-brand/10 via-white to-accent/10 p-8 shadow-xl">
+        <img
+          src="/img/programs/program-convenios.svg"
+          alt="Convenios institucionales GESCO para colegios y empresas"
+          width="480"
+          height="360"
+          loading="eager"
+          class="max-h-80 w-full object-contain"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="section-pad bg-white">
+    <div class="container-g">
+      <h2 class="text-center text-3xl font-extrabold text-navy">¿Qué incluye un convenio con GESCO?</h2>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {benefits.map((b) => (
+          <div class="rounded-2xl border border-black/8 bg-surface p-6">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand/10">
+              {b.icon === 'users' && (
+                <svg aria-hidden="true" class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              )}
+              {b.icon === 'tag' && (
+                <svg aria-hidden="true" class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                  <line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+              )}
+              {b.icon === 'chart' && (
+                <svg aria-hidden="true" class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+                </svg>
+              )}
+              {b.icon === 'award' && (
+                <svg aria-hidden="true" class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+                </svg>
+              )}
+            </div>
+            <h3 class="font-bold text-navy">{b.title}</h3>
+            <p class="mt-2 text-sm text-muted">{b.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Who can apply -->
+  <section class="section-pad bg-surface">
+    <div class="container-g grid gap-10 lg:grid-cols-2">
+      <div>
+        <h2 class="text-3xl font-extrabold text-navy">¿Qué instituciones pueden tener convenio?</h2>
+        <ul class="mt-6 grid gap-3">
+          {types.map((t) => (
+            <li class="flex items-center gap-3 rounded-xl border border-black/8 bg-white p-4">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand/10">
+                <svg aria-hidden="true" class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span class="font-medium text-navy">{t}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="flex flex-col justify-center">
+        <div class="rounded-3xl bg-brand p-8 text-white">
+          <h3 class="text-2xl font-extrabold">¿Cómo iniciamos?</h3>
+          <ol class="mt-5 grid gap-4">
+            <li class="flex gap-3">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-sm font-bold">1</span>
+              <p class="text-white/90">Contáctanos por WhatsApp e indícanos el tipo de institución y el programa que necesitas.</p>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-sm font-bold">2</span>
+              <p class="text-white/90">Coordinamos una reunión de diagnóstico para entender las necesidades del grupo.</p>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-sm font-bold">3</span>
+              <p class="text-white/90">Diseñamos la propuesta y condiciones del convenio adaptadas a tu institución.</p>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-sm font-bold">4</span>
+              <p class="text-white/90">Los participantes acceden a la Plataforma Gesco con seguimiento y certificación.</p>
+            </li>
+          </ol>
+          <div class="mt-7">
+            <WhatsAppButton href={WA.convenios} label="Iniciar conversación" source="convenios-steps" variant="ghost" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FAQAccordion items={faqs} />
+
+  <!-- Final CTA -->
+  <section class="section-pad bg-navy text-white">
+    <div class="container-g grid items-center gap-6 md:grid-cols-[1fr_auto]">
+      <div>
+        <h2 class="text-3xl font-extrabold md:text-4xl">¿Tu institución quiere ser parte de la red GESCO?</h2>
+        <p class="mt-4 max-w-2xl text-white/75">
+          Escríbenos y un asesor institucional coordinará contigo los detalles del convenio sin costo y sin compromiso.
+        </p>
+      </div>
+      <WhatsAppButton href={WA.convenios} label="Consultar convenio" source="convenios-footer" />
+    </div>
+  </section>
+</BaseLayout>

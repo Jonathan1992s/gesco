@@ -1,0 +1,77 @@
+﻿---
+import ProgramLayout from '@/layouts/ProgramLayout.astro';
+import ProgramHero from '@/components/program/ProgramHero.astro';
+import ProgramBenefits from '@/components/program/ProgramBenefits.astro';
+import CurriculumGrid from '@/components/program/CurriculumGrid.astro';
+import FAQAccordion from '@/components/program/FAQAccordion.astro';
+import ProgramCTA from '@/components/program/ProgramCTA.astro';
+import { SITE, seoByPath } from '@/data/site';
+import { getProgram } from '@/data/programs';
+import { programFaqs } from '@/data/faqs';
+import { breadcrumbSchema, courseSchema, faqSchema } from '@/data/schema';
+
+const program = getProgram('capacitacion-docente');
+if (!program) throw new Error('Programa capacitacion-docente no encontrado');
+const seo = seoByPath['/capacitacion-docente/'];
+const canonical = `${SITE.url}/capacitacion-docente/`;
+const faqs = programFaqs.capacitacionDocente;
+const schema = [
+  courseSchema(program.name, program.description, { courseMode: 'online' }),
+  faqSchema(faqs),
+  breadcrumbSchema([{ label: 'Inicio', href: '/' }, { label: program.name, href: '/capacitacion-docente/' }]),
+];
+---
+
+<ProgramLayout title={seo.title} description={seo.description} canonical={canonical} pageName={program.name} schema={schema}>
+  <ProgramHero program={program} />
+
+  <!-- Certificación Ministerio de Trabajo highlight -->
+  <section class="bg-brand py-10">
+    <div class="container-g flex flex-col items-center gap-6 text-center md:flex-row md:text-left">
+      <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-white/15">
+        <svg aria-hidden="true" class="h-10 w-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+        </svg>
+      </div>
+      <div>
+        <p class="text-xl font-extrabold text-white">Certificación avalada por el Ministerio de Trabajo</p>
+        <p class="mt-2 max-w-xl text-white/80">
+          Los programas de capacitación docente de GESCO emiten certificados con aval oficial del Ministerio de Trabajo del Ecuador,
+          reconocidos para carrera docente y hoja de vida profesional.
+        </p>
+      </div>
+      <a
+        href="/cursos-certificacion/"
+        class="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-bold text-brand transition hover:bg-surface"
+      >
+        Ver certificaciones disponibles
+      </a>
+    </div>
+  </section>
+
+  <ProgramBenefits items={program.benefits} />
+  <CurriculumGrid items={program.curriculum} />
+
+  <!-- CTA Plataforma -->
+  <section class="bg-surface py-10">
+    <div class="container-g flex flex-col items-center gap-4 text-center">
+      <p class="text-lg font-bold text-navy">Explora los programas de capacitación disponibles en la plataforma</p>
+      <a
+        href="https://plataformagesco.com/course/index.php?categoryid=4"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white! shadow-sm transition hover:bg-brand-dark"
+      >
+        <svg aria-hidden="true" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        Ver cursos en Plataforma Gesco
+      </a>
+    </div>
+  </section>
+
+  <FAQAccordion items={faqs} />
+  <ProgramCTA waKey={program.waKey} source="capacitacion-docente-final" />
+</ProgramLayout>
