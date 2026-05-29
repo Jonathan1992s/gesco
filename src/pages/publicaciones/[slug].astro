@@ -19,6 +19,11 @@ const next = idx < all.length - 1 ? all[idx + 1] : null;
 // URL del PDF con espacios codificados
 const pdfUrl = entry.data.pdf.split('/').map((s) => encodeURIComponent(s)).join('/');
 
+// Google Docs Viewer para mobile (Android Chrome no soporta <embed> PDF)
+const ua = Astro.request.headers.get('user-agent') ?? '';
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Tablet/i.test(ua);
+const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(`${SITE.url}${pdfUrl}`)}&embedded=true`;
+
 const schema = [
   breadcrumbSchema([
     { label: 'Inicio', href: '/' },
@@ -139,12 +144,22 @@ const schema = [
 
     <!-- PDF Viewer -->
     <main class="flex flex-1 flex-col overflow-hidden">
-      <embed
-        src={pdfUrl}
-        type="application/pdf"
-        title={entry.data.title}
-        class="h-[75vh] w-full lg:h-full lg:flex-1 lg:min-h-0"
-      />
+      {isMobile ? (
+        <iframe
+          src={googleViewerUrl}
+          title={entry.data.title}
+          style="border:0"
+          class="h-[75vh] w-full lg:h-full lg:flex-1 lg:min-h-0"
+          allow="fullscreen"
+        />
+      ) : (
+        <embed
+          src={pdfUrl}
+          type="application/pdf"
+          title={entry.data.title}
+          class="h-[75vh] w-full lg:h-full lg:flex-1 lg:min-h-0"
+        />
+      )}
     </main>
   </div>
 
