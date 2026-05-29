@@ -31,7 +31,7 @@ function baseLayout(preheader: string, content: string) {
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td>
-                  <img src="https://gescovirtual.com/img/logo-negativo.webp"
+                  <img src="https://gescovirtual.com/img/logo-negativo.png"
                        alt="GESCO"
                        width="130"
                        style="display:block;border:0;outline:none;max-width:130px;height:auto;" />
