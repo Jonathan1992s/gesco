@@ -122,7 +122,7 @@ const schema = [
         Descargar PDF
       </a>
 
-      <!-- Prev / Next (desktop sidebar) -->
+      <!-- Prev / Next -->
       {(prev || next) && (
         <div class="mt-4 flex flex-col gap-2 border-t border-black/8 pt-4">
           {prev && (
@@ -153,23 +153,5 @@ const schema = [
       </main>
     )}
   </div>
-
-  <!-- Nav móvil prev/next -->
-  {(prev || next) && (
-    <nav class="mx-auto flex w-full max-w-[1400px] justify-between border-t border-black/8 bg-white px-4 py-3">
-      {prev
-        ? <a href={`/publicaciones/${prev.id.replace(/\.mdx$/, '')}/`}
-             class="flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-brand">
-            ← N.° {prev.data.numero}
-          </a>
-        : <span />}
-      {next
-        ? <a href={`/publicaciones/${next.id.replace(/\.mdx$/, '')}/`}
-             class="flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-brand">
-            N.° {next.data.numero} →
-          </a>
-        : <span />}
-    </nav>
-  )}
 
 </BaseLayout>
