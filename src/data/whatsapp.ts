@@ -25,7 +25,7 @@ export const WA = {
   espol: whatsappLink('Hola, quiero prepararme online para el proceso de admisión a la ESPOL.', 'espol'),
   salvavidas: whatsappLink('Hola, necesito ayuda académica online para mejorar mis notas.', 'salvavidas'),
   clasesParticulares: whatsappLink('Hola, quiero información sobre clases particulares online de GESCO.', 'clases-particulares'),
-  padres: whatsappLink('Hola, soy padre/madre y quiero información online para mi hijo/a.', 'padres'),
+  padres: whatsappLink('Hola, soy padre/madre y quiero información para mi hijo/a.', 'padres'),
   vocacional: whatsappLink('Hola, quiero información sobre el test vocacional online de GESCO.', 'test-vocacional'),
   blog: whatsappLink('Hola, vi el blog de GESCO y quiero más información sobre sus programas online.', 'blog'),
   quito: whatsappLink('Hola, quiero información sobre el preuniversitario online de GESCO. Sé que su sede está en Quito.', 'preuniversitario-quito'),
