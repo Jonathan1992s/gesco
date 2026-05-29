@@ -18,7 +18,7 @@ export const universities: University[] = [
     shortName: 'USFQ',
     waKey: 'usfq',
     category: 'privada',
-    title: 'Preparación online para la USFQ | GESCO',
+    title: 'Ingreso a la USFQ: Preparación Online en Ecuador | GESCO',
     description:
       'Prepárate online para el proceso de admisión a la Universidad San Francisco de Quito con clases en vivo, simuladores y acompañamiento.',
     focus: ['Matemática', 'Aptitud verbal', 'Inglés', 'Razonamiento lógico'],
@@ -29,7 +29,7 @@ export const universities: University[] = [
     shortName: 'UDLA',
     waKey: 'udla',
     category: 'privada',
-    title: 'Preparación online para la UDLA | GESCO',
+    title: 'Ingreso a la UDLA: Preparación Online en Ecuador | GESCO',
     description:
       'Prepárate online para el proceso de admisión a la Universidad de Las Américas con simuladores, clases en vivo y orientación de GESCO.',
     focus: ['Matemática', 'Aptitud verbal', 'Razonamiento abstracto', 'Simulacros UDLA'],
@@ -40,7 +40,7 @@ export const universities: University[] = [
     shortName: 'PUCE',
     waKey: 'puce',
     category: 'privada',
-    title: 'Preparación online para la PUCE | GESCO',
+    title: 'Ingreso a la PUCE: Preparación Online en Ecuador | GESCO',
     description:
       'Prepárate online para el proceso de admisión a la PUCE con clases en vivo, simuladores y acompañamiento de GESCO.',
     focus: ['Razonamiento verbal', 'Razonamiento matemático', 'Razonamiento abstracto', 'Simulacros PUCE'],
@@ -51,7 +51,7 @@ export const universities: University[] = [
     shortName: 'UIDE',
     waKey: 'uide',
     category: 'privada',
-    title: 'Preparación online para la UIDE | GESCO',
+    title: 'Ingreso a la UIDE: Preparación Online en Ecuador | GESCO',
     description: 'Prepárate online para el proceso de admisión a la Universidad Internacional del Ecuador con GESCO.',
     focus: ['Matemática', 'Aptitud verbal', 'Razonamiento lógico', 'Simulacros UIDE'],
   },
@@ -61,7 +61,7 @@ export const universities: University[] = [
     shortName: 'UCE',
     waKey: 'uce',
     category: 'publica',
-    title: 'Preparación online para la UCE | GESCO',
+    title: 'Ingreso a la UCE: Preparación Online en Ecuador | GESCO',
     description:
       'Prepárate online para el proceso de admisión a la Universidad Central del Ecuador con simuladores, clases en vivo y acompañamiento.',
     focus: ['Razonamiento matemático', 'Lectura crítica', 'Aptitud verbal', 'Simuladores'],
@@ -72,7 +72,7 @@ export const universities: University[] = [
     shortName: 'EPN',
     waKey: 'epn',
     category: 'publica',
-    title: 'Preparación online para la EPN | GESCO',
+    title: 'Ingreso a la EPN: Preparación Online en Ecuador | GESCO',
     description:
       'Prepárate online para el proceso de admisión a la Escuela Politécnica Nacional con docentes especializados y simuladores.',
     focus: ['Matemática', 'Lógica', 'Física base', 'Simuladores'],
@@ -83,7 +83,7 @@ export const universities: University[] = [
     shortName: 'ESPE',
     waKey: 'espe',
     category: 'publica',
-    title: 'Preparación online para la ESPE | GESCO',
+    title: 'Ingreso a la ESPE: Preparación Online en Ecuador | GESCO',
     description:
       'Prepárate online para el proceso de admisión a la Universidad de las Fuerzas Armadas ESPE con GESCO.',
     focus: ['Matemática', 'Aptitud verbal', 'Lógica', 'Seguimiento'],
@@ -94,7 +94,7 @@ export const universities: University[] = [
     shortName: 'ESPOL',
     waKey: 'espol',
     category: 'publica',
-    title: 'Preparación online para la ESPOL | GESCO',
+    title: 'Ingreso a la ESPOL: Preparación Online en Ecuador | GESCO',
     description:
       'Prepárate online para el proceso de admisión a la Escuela Superior Politécnica del Litoral con GESCO.',
     focus: ['Matemática', 'Razonamiento', 'Simuladores', 'Plan de estudio'],

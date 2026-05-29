@@ -18,7 +18,7 @@ export const seoByPath = {
   '/': {
     title: 'Preuniversitario Online Ecuador | Ingreso Universitario',
     description:
-      'Prepárate online para universidades públicas y privadas. Clases en vivo, Plataforma Gesco, simuladores y seguimiento por WhatsApp. Más de 10.000 estudiantes en Ecuador.',
+      'Prepárate para universidades públicas y privadas en Ecuador. Clases en vivo, Plataforma Gesco, simuladores y seguimiento por WhatsApp. +10.000 estudiantes.',
   },
   '/preuniversitario/': {
     title: 'Curso Preuniversitario Online en Ecuador | GESCO',
@@ -46,7 +46,7 @@ export const seoByPath = {
       'Clases particulares y refuerzos académicos online para bachillerato: matemática, física, química, inglés y más.',
   },
   '/test-vocacional/': {
-    title: 'Test Vocacional Online en Ecuador | GESCO',
+    title: 'Test Vocacional CHASIDE Online en Ecuador | GESCO',
     description:
       'Descubre qué carrera universitaria se adapta mejor a tu perfil con orientación vocacional online y acompañamiento de GESCO.',
   },
@@ -61,7 +61,7 @@ export const seoByPath = {
       'GESCO tiene sede en Quito y prepara online a estudiantes de todo Ecuador con clases en vivo, Plataforma Gesco y seguimiento personalizado.',
   },
   '/contacto/': {
-    title: 'Contacto | GESCO Preuniversitario Online',
+    title: 'Contacto — Preparación Preuniversitaria Online | GESCO',
     description:
       'Contáctanos por WhatsApp, teléfono o formulario. Nuestra sede está en Quito y atendemos online a estudiantes de todo Ecuador.',
   },
