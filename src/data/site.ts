@@ -16,9 +16,9 @@ export const SITE = {
 
 export const seoByPath = {
   '/': {
-    title: 'Preuniversitario Online en Ecuador | Ingreso Universidades - GESCO',
+    title: 'Preuniversitario Online Ecuador | Ingreso Universitario',
     description:
-      'Prepárate online para universidades públicas y privadas con clases en vivo, Plataforma Gesco, simuladores y acompañamiento por WhatsApp.',
+      'Prepárate online para universidades públicas y privadas. Clases en vivo, Plataforma Gesco, simuladores y seguimiento por WhatsApp. Más de 10.000 estudiantes en Ecuador.',
   },
   '/preuniversitario/': {
     title: 'Curso Preuniversitario Online en Ecuador | GESCO',

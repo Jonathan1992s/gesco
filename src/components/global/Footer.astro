@@ -1,6 +1,8 @@
 ---
 import { SITE } from '@/data/site';
 import { navItems, servicesItems } from '@/data/navigation';
+
+const [e1, e2] = SITE.email.split('@');
 ---
 
 <footer class="bg-navy pb-24 pt-14 text-white lg:pb-10">
@@ -9,11 +11,11 @@ import { navItems, servicesItems } from '@/data/navigation';
       <img src={SITE.logo} alt="GESCO Preuniversitario" width="150" height="50" class="mb-5 rounded bg-white p-2" loading="lazy" />
       <p class="max-w-sm text-white/75">{SITE.description}</p>
       <address class="mt-4 not-italic text-white/75">{SITE.address}</address>
-      <p class="mt-2 text-white/75">{SITE.phone} · {SITE.email}</p>
+      <p class="mt-2 text-white/75">{SITE.phone}</p>
     </div>
 
     <div>
-      <h2 class="mb-4 text-lg font-bold">Preuniversitario</h2>
+      <p class="mb-4 text-lg font-bold">Preuniversitario</p>
       <ul class="grid gap-2 text-white/75">
         {navItems.slice(0, 6).map((item) => (
           <li><a class="hover:text-accent" href={item.href}>{item.label}</a></li>
@@ -22,7 +24,7 @@ import { navItems, servicesItems } from '@/data/navigation';
     </div>
 
     <div>
-      <h2 class="mb-4 text-lg font-bold">Más servicios</h2>
+      <p class="mb-4 text-lg font-bold">Más servicios</p>
       <ul class="grid gap-2 text-white/75">
         {servicesItems.map((item) => (
           <li><a class="hover:text-accent" href={item.href}>{item.label}</a></li>
@@ -41,7 +43,7 @@ import { navItems, servicesItems } from '@/data/navigation';
     </div>
 
     <div>
-      <h2 class="mb-4 text-lg font-bold">Canales oficiales</h2>
+      <p class="mb-4 text-lg font-bold">Canales oficiales</p>
       <ul class="grid gap-3 text-white/75">
         <li>
           <span class="block text-sm font-bold uppercase tracking-wide text-white/45">Teléfono</span>
@@ -49,7 +51,9 @@ import { navItems, servicesItems } from '@/data/navigation';
         </li>
         <li>
           <span class="block text-sm font-bold uppercase tracking-wide text-white/45">Correo</span>
-          <a class="break-all hover:text-accent" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          <a class="break-all hover:text-accent" data-e1={e1} data-e2={e2} href="/contacto/" id="footer-email">
+            {e1}&#64;{e2}
+          </a>
         </li>
       </ul>
       <div class="mt-5 flex flex-wrap gap-3">
@@ -63,3 +67,11 @@ import { navItems, servicesItems } from '@/data/navigation';
     <a href="/verificar/" class="hover:text-white/90 transition-colors">Verificar documento</a>
   </div>
 </footer>
+
+<script>
+  const el = document.getElementById('footer-email') as HTMLAnchorElement | null;
+  if (el) {
+    const addr = `${el.dataset.e1}@${el.dataset.e2}`;
+    el.href = `mailto:${addr}`;
+  }
+</script>

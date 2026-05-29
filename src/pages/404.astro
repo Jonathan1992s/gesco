@@ -1,0 +1,57 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE } from '@/data/site';
+import { WA } from '@/data/whatsapp';
+---
+
+<BaseLayout
+  title="Página no encontrada | GESCO"
+  description="La página que buscas no existe. Explora nuestros programas de preparación universitaria en gescovirtual.com"
+  canonical={`${SITE.url}/404/`}
+>
+  <section class="flex min-h-[70vh] items-center bg-surface">
+    <div class="container-g py-20 text-center">
+
+      <p class="text-8xl font-black text-brand/20 select-none">404</p>
+
+      <h1 class="mt-4 text-3xl font-extrabold text-navy md:text-4xl">
+        Esta página no existe
+      </h1>
+      <p class="mt-4 max-w-md mx-auto text-lg text-muted">
+        La dirección que ingresaste no está disponible. Puede que haya cambiado de URL o simplemente no exista.
+      </p>
+
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <a href="/" class="rounded-xl bg-brand px-6 py-3 font-bold text-white hover:bg-brand-dark transition-colors">
+          Ir al inicio
+        </a>
+        <a href="/preuniversitario/" class="rounded-xl border-2 border-brand px-6 py-3 font-bold text-brand hover:bg-brand/5 transition-colors">
+          Ver programas
+        </a>
+        <a
+          href={WA.home}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-xl bg-[#25d366] px-6 py-3 font-bold text-white hover:bg-[#1ebe5a] transition-colors"
+        >
+          Contactar por WhatsApp
+        </a>
+      </div>
+
+      <div class="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 max-w-3xl mx-auto text-left">
+        {[
+          { href: '/preuniversitario/', label: 'Preuniversitario', desc: 'Preparación para universidades públicas y privadas' },
+          { href: '/universidades-publicas/', label: 'Universidades Públicas', desc: 'UCE, EPN, ESPOL, ESPE y más' },
+          { href: '/universidades-privadas/', label: 'Universidades Privadas', desc: 'USFQ, UDLA, PUCE, UIDE' },
+          { href: '/test-vocacional/', label: 'Test Vocacional', desc: 'Descubre qué carrera es para ti' },
+        ].map(({ href, label, desc }) => (
+          <a href={href} class="rounded-2xl bg-white p-5 shadow-sm hover:shadow-md transition-shadow border border-black/5">
+            <p class="font-bold text-navy">{label}</p>
+            <p class="mt-1 text-sm text-muted">{desc}</p>
+          </a>
+        ))}
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>
