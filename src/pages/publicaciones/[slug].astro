@@ -1,0 +1,169 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE } from '@/data/site';
+import { breadcrumbSchema } from '@/data/schema';
+
+const revistas = await getCollection('publicaciones');
+const slug = Astro.params.slug!;
+const entry = revistas.find((r) => r.id.replace(/\.mdx$/, '') === slug);
+if (!entry) return Astro.redirect('/404');
+const canonical = `${SITE.url}/publicaciones/${slug}/`;
+
+// Prev / next por número
+const all = (await getCollection('publicaciones')).sort((a, b) => a.data.numero - b.data.numero);
+const idx = all.findIndex((r) => r.data.numero === entry.data.numero);
+const prev = idx > 0 ? all[idx - 1] : null;
+const next = idx < all.length - 1 ? all[idx + 1] : null;
+
+// URL del PDF con espacios codificados
+const pdfUrl = entry.data.pdf.split('/').map((s) => encodeURIComponent(s)).join('/');
+
+const schema = [
+  breadcrumbSchema([
+    { label: 'Inicio', href: '/' },
+    { label: 'Publicaciones', href: '/publicaciones/' },
+    { label: entry.data.title, href: canonical },
+  ]),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: entry.data.title,
+    description: entry.data.description,
+    url: canonical,
+    datePublished: entry.data.fecha,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Corporación para la Gestión del Conocimiento',
+      url: SITE.url,
+    },
+    about: entry.data.temas.map((t: string) => ({ '@type': 'Thing', name: t })),
+  },
+];
+---
+
+<BaseLayout
+  title={`${entry.data.title} | GESCO`}
+  description={entry.data.description}
+  canonical={canonical}
+  schema={schema}
+>
+
+  <!-- ── HEADER DEL VISOR ──────────────────────────────────────── -->
+  <div class="border-b border-black/8 bg-white">
+    <div class="mx-auto flex w-full max-w-[1400px] flex-wrap items-center justify-between gap-3 px-4 py-3">
+      <a href="/publicaciones/" class="flex items-center gap-1.5 text-sm text-muted hover:text-brand transition-colors">
+        <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        Todas las ediciones
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full bg-navy/8 px-3 py-1 text-xs font-extrabold text-navy">
+          N.° {entry.data.numero}
+        </span>
+        <span class="text-sm text-muted">{entry.data.mes} {entry.data.year}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LAYOUT SPLIT ──────────────────────────────────────────── -->
+  <div class="mx-auto flex w-full max-w-[1400px] flex-col border-x border-black/5 lg:flex-row lg:h-[calc(100dvh-138px)] lg:overflow-hidden">
+
+    <!-- Sidebar / Info (visible en todos los breakpoints) -->
+    <aside class="flex w-full flex-col border-b border-black/8 bg-surface p-6 lg:w-64 lg:shrink-0 lg:overflow-y-auto lg:border-b-0 lg:border-r xl:w-72">
+      <!-- Número grande -->
+      <div class="mb-5 flex items-start gap-4 lg:block lg:mb-6">
+        <p class="text-[3.5rem] font-black leading-none text-navy/10 select-none shrink-0 lg:text-[3.5rem]">{entry.data.numero}</p>
+        <div class="lg:mt-1">
+          <h1 class="text-base font-extrabold leading-snug text-navy">{entry.data.title}</h1>
+          <p class="mt-1 text-xs text-muted">{entry.data.mes} {entry.data.year}</p>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <hr class="border-black/8 mb-5" />
+
+      <!-- Análisis principal -->
+      <div class="mb-5">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Análisis principal</p>
+        <p class="text-sm font-semibold text-navy leading-snug">{entry.data.analisis}</p>
+        <p class="mt-1 text-xs text-muted">{entry.data.autor}</p>
+      </div>
+
+      <!-- Descripción -->
+      <p class="text-xs leading-relaxed text-muted mb-5">{entry.data.description}</p>
+
+      <!-- Temas -->
+      <div class="mb-6">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-muted mb-2">Temas</p>
+        <div class="flex flex-wrap gap-1.5">
+          {entry.data.temas.map((t: string) => (
+            <span class="rounded-md bg-navy/8 px-2.5 py-1 text-[11px] font-medium text-navy">{t}</span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Descargar -->
+      <a
+        href={pdfUrl}
+        download
+        class="solid-cta lg:mt-auto flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-bold text-white transition hover:bg-brand-dark"
+      >
+        <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Descargar PDF
+      </a>
+
+      <!-- Prev / Next (desktop sidebar) -->
+      {(prev || next) && (
+        <div class="mt-4 flex flex-col gap-2 border-t border-black/8 pt-4">
+          {prev && (
+            <a href={`/publicaciones/${prev.id.replace(/\.mdx$/, '')}/`}
+               class="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-muted hover:bg-white hover:text-brand transition-colors">
+              <span aria-hidden>←</span> N.° {prev.data.numero} · {prev.data.mes}
+            </a>
+          )}
+          {next && (
+            <a href={`/publicaciones/${next.id.replace(/\.mdx$/, '')}/`}
+               class="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-muted hover:bg-white hover:text-brand transition-colors">
+              <span aria-hidden>→</span> N.° {next.data.numero} · {next.data.mes}
+            </a>
+          )}
+        </div>
+      )}
+    </aside>
+
+    <!-- PDF Viewer -->
+    <main class="flex flex-1 flex-col overflow-hidden">
+      <embed
+        src={pdfUrl}
+        type="application/pdf"
+        title={entry.data.title}
+        class="h-[75vh] w-full lg:h-full lg:flex-1 lg:min-h-0"
+      />
+    </main>
+  </div>
+
+  <!-- Nav móvil prev/next -->
+  {(prev || next) && (
+    <nav class="mx-auto flex w-full max-w-[1400px] justify-between border-t border-black/8 bg-white px-4 py-3">
+      {prev
+        ? <a href={`/publicaciones/${prev.id.replace(/\.mdx$/, '')}/`}
+             class="flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-brand">
+            ← N.° {prev.data.numero}
+          </a>
+        : <span />}
+      {next
+        ? <a href={`/publicaciones/${next.id.replace(/\.mdx$/, '')}/`}
+             class="flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-brand">
+            N.° {next.data.numero} →
+          </a>
+        : <span />}
+    </nav>
+  )}
+
+</BaseLayout>

@@ -1,0 +1,51 @@
+---
+import ProgramLayout from '@/layouts/ProgramLayout.astro';
+import ProgramBenefits from '@/components/program/ProgramBenefits.astro';
+import CurriculumGrid from '@/components/program/CurriculumGrid.astro';
+import FAQAccordion from '@/components/program/FAQAccordion.astro';
+import ProgramCTA from '@/components/program/ProgramCTA.astro';
+import { SITE } from '@/data/site';
+import { WA } from '@/data/whatsapp';
+import { universities } from '@/data/universities';
+import { generalFaqs, programFaqs } from '@/data/faqs';
+import { breadcrumbSchema, courseSchema, faqSchema } from '@/data/schema';
+import WhatsAppButton from '@/components/global/WhatsAppButton.astro';
+
+const university = universities.find((u) => u.slug === Astro.params.slug);
+if (!university) return Astro.redirect('/404');
+const canonical = `${SITE.url}/universidades/${university.slug}/`;
+const faqs = university.category === 'privada' ? programFaqs.privadas : programFaqs.publicas;
+const schema = [
+  courseSchema(`Preparación online para ${university.shortName}`, university.description, { courseMode: 'online', url: `/universidades/${university.slug}/` }),
+  faqSchema(faqs),
+  breadcrumbSchema([
+    { label: 'Inicio', href: '/' },
+    { label: 'Universidades', href: '/preuniversitario/' },
+    { label: university.shortName, href: `/universidades/${university.slug}/` },
+  ]),
+];
+---
+
+<ProgramLayout title={university.title} description={university.description} canonical={canonical} pageName={university.shortName} schema={schema}>
+  <section class="bg-surface py-12 md:py-16">
+    <div class="container-g grid items-center gap-10 lg:grid-cols-2">
+      <div>
+        <p class="font-bold uppercase tracking-wide text-brand">Ruta {university.category === 'privada' ? 'privada' : 'pública'}</p>
+        <h1 class="mt-3 text-4xl font-extrabold leading-tight text-navy md:text-5xl">Preparación online para ingresar a {university.shortName}</h1>
+        <p class="mt-5 text-lg text-muted">{university.description}</p>
+        <div class="mt-7">
+          <WhatsAppButton href={WA[university.waKey]} label={`Quiero prepararme para ${university.shortName}`} source={`universidad-${university.slug}`} />
+        </div>
+      </div>
+      <div class="rounded-3xl bg-white p-8 shadow-xl">
+        <p class="text-sm font-bold uppercase tracking-wide text-brand">Universidad objetivo</p>
+        <h2 class="mt-3 text-3xl font-extrabold text-navy">{university.name}</h2>
+        <p class="mt-4 text-muted">GESCO adapta la preparación online a tus tiempos, universidad objetivo y necesidades académicas.</p>
+      </div>
+    </div>
+  </section>
+  <ProgramBenefits items={['Diagnóstico inicial', 'Clases online en vivo', 'Simuladores', 'Seguimiento por WhatsApp']} />
+  <CurriculumGrid items={university.focus} />
+  <FAQAccordion items={[...faqs, ...generalFaqs.slice(0, 1)]} />
+  <ProgramCTA waKey={university.waKey} source={`universidad-${university.slug}-final`} />
+</ProgramLayout>
