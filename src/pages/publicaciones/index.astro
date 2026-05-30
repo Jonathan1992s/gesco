@@ -154,17 +154,10 @@ const autoresParlamentarios = [
                 <span class="text-xs font-medium text-white/40">{r.data.mes} {r.data.year}</span>
               </div>
               <div class="relative mt-auto pt-8">
-                <p class="text-[10px] font-bold uppercase tracking-widest text-white/35 mb-2">Análisis principal</p>
-                <h2 class="text-xl font-bold leading-snug text-white">{r.data.analisis}</h2>
-                <p class="mt-1 text-xs text-white/50">— {r.data.autor}</p>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-brand/70 mb-2">Derecho Parlamentario</p>
+                <h2 class="text-xl font-bold leading-snug text-white">{r.data.analisisParlamentario}</h2>
+                <p class="mt-1 text-xs text-white/50">— {r.data.autorParlamentario}</p>
               </div>
-              {r.data.analisisParlamentario && (
-                <div class="relative mt-4 pt-4 border-t border-white/10">
-                  <p class="text-[10px] font-bold uppercase tracking-widest text-brand/70 mb-1.5">Derecho Parlamentario</p>
-                  <p class="text-sm font-semibold leading-snug text-white/80 line-clamp-2">{r.data.analisisParlamentario}</p>
-                  <p class="mt-1 text-xs text-white/40">— {r.data.autorParlamentario}</p>
-                </div>
-              )}
               <div class="relative mt-4 flex flex-wrap gap-1.5">
                 {r.data.temas.map((t: string) => (
                   <span class="rounded-md bg-white/[0.07] px-2.5 py-1 text-[11px] font-medium text-white/55">{t}</span>
@@ -210,14 +203,9 @@ const autoresParlamentarios = [
                 <p class="text-[10px] text-white/40 mt-0.5">{r.data.mes} {r.data.year}</p>
               </div>
               <h2 class="relative mt-3 text-sm font-bold leading-snug text-white line-clamp-2 flex-1">
-                {r.data.analisis}
+                {r.data.analisisParlamentario}
               </h2>
-              {r.data.analisisParlamentario && (
-                <div class="relative mt-2">
-                  <p class="text-[11px] leading-snug text-brand/80 line-clamp-2">{r.data.analisisParlamentario}</p>
-                  <p class="mt-0.5 text-[10px] text-white/35">— {r.data.autorParlamentario}</p>
-                </div>
-              )}
+              <p class="relative mt-1 text-[10px] text-white/35">— {r.data.autorParlamentario}</p>
               <div class="relative mt-3 flex flex-wrap gap-1">
                 {r.data.temas.slice(0, 2).map((t: string) => (
                   <span class="rounded bg-white/[0.07] px-2 py-0.5 text-[10px] text-white/50">{t}</span>
