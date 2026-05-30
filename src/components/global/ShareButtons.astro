@@ -40,16 +40,18 @@ const networks = [
 ];
 ---
 
-<div class={`flex flex-wrap items-center gap-2 ${extraClass}`}>
+<div class={`flex flex-col gap-2 ${extraClass}`}>
   <span class="text-xs font-bold uppercase tracking-widest text-muted">Compartir</span>
-  {networks.map((n) => (
-    <a
-      href={n.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={n.label}
-      class={`inline-flex items-center justify-center rounded-full ${n.bg} p-2 text-white transition`}
-      set:html={n.icon}
-    />
-  ))}
+  <div class="flex items-center gap-2">
+    {networks.map((n) => (
+      <a
+        href={n.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={n.label}
+        class={`inline-flex items-center justify-center rounded-full ${n.bg} p-2 text-white transition`}
+        set:html={n.icon}
+      />
+    ))}
+  </div>
 </div>
