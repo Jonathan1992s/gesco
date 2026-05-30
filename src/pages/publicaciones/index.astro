@@ -82,7 +82,6 @@ const autoresParlamentarios = [
       <div class="relative flex-1 min-w-[200px] max-w-xs" id="autor-combobox">
         <span class="text-[10px] font-bold uppercase tracking-wider text-muted sr-only">Autor</span>
         <div class="relative">
-          <!-- Icono buscar -->
           <svg class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
@@ -94,7 +93,6 @@ const autoresParlamentarios = [
             spellcheck="false"
             class="w-full rounded-full border border-black/12 bg-white py-1.5 pl-8 pr-8 text-xs font-medium text-navy placeholder:text-muted/60 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30 transition-all"
           />
-          <!-- Botón limpiar -->
           <button
             id="autor-clear"
             type="button"
@@ -106,7 +104,6 @@ const autoresParlamentarios = [
             </svg>
           </button>
         </div>
-        <!-- Dropdown sugerencias -->
         <ul
           id="autor-dropdown"
           role="listbox"
@@ -129,18 +126,122 @@ const autoresParlamentarios = [
     </div>
   </div>
 
-  <!-- ── FEATURED (últimas 2) ────────────────────────────────────── -->
-  <section class="bg-white pt-10 pb-4">
+  <!-- ── VISTA NORMAL (sin filtro de autor) ─────────────────────── -->
+  <div id="section-normal">
+
+    <!-- Featured (últimas 2) -->
+    <section class="bg-white pt-10 pb-4">
+      <div class="container-g">
+        <p class="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-muted">Últimas ediciones</p>
+        <div class="grid gap-5 sm:grid-cols-2">
+          {featured.map((r) => {
+            const slug = r.id.replace(/\.mdx$/, '');
+            return (
+              <article
+                data-year={r.data.year}
+                data-autor={r.data.autorParlamentario ?? ''}
+                data-card-normal
+                class="card-reveal group relative flex min-h-[300px] flex-col overflow-hidden rounded-2xl bg-navy p-7 ring-1 ring-white/8 transition-all duration-300 hover:-translate-y-1 hover:ring-brand/40 hover:shadow-2xl hover:shadow-brand/15"
+              >
+                <span aria-hidden="true"
+                  class="pointer-events-none absolute -bottom-6 -right-3 select-none font-black text-white/[0.06] text-[10rem] leading-none">
+                  {r.data.numero}
+                </span>
+                <div class="relative flex items-start justify-between gap-3">
+                  <span class="inline-flex items-center gap-1.5 rounded-full bg-brand/20 px-3 py-1 text-xs font-extrabold tracking-wide text-brand">
+                    N.° {r.data.numero}
+                  </span>
+                  <span class="text-xs font-medium text-white/40">{r.data.mes} {r.data.year}</span>
+                </div>
+                <div class="relative mt-auto pt-8">
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-brand/70 mb-2">Derecho Parlamentario</p>
+                  <h2 class="text-xl font-bold leading-snug text-white">{r.data.analisisParlamentario}</h2>
+                  <p class="mt-1 text-xs text-white/50">— {r.data.autorParlamentario}</p>
+                </div>
+                <div class="relative mt-4 flex flex-wrap gap-1.5">
+                  {r.data.temas.map((t: string) => (
+                    <span class="rounded-md bg-white/[0.07] px-2.5 py-1 text-[11px] font-medium text-white/55">{t}</span>
+                  ))}
+                </div>
+                <div class="relative mt-5 flex">
+                  <a href={`/publicaciones/${slug}/`}
+                    class="solid-cta inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-bold text-white transition-all duration-200 hover:bg-brand-dark"
+                    aria-label={`Leer edición NJ ${r.data.numero}`}>
+                    <svg aria-hidden="true" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span class="hidden sm:inline">Leer edición</span>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- Archivo -->
+    <section class="bg-white pt-4 pb-20">
+      <div class="container-g">
+        <p class="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-muted">Archivo</p>
+        <div class="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+          {archive.map((r) => {
+            const slug = r.id.replace(/\.mdx$/, '');
+            return (
+              <article
+                data-year={r.data.year}
+                data-autor={r.data.autorParlamentario ?? ''}
+                data-card-normal
+                class="card-reveal group relative flex flex-col overflow-hidden rounded-xl bg-navy p-5 ring-1 ring-white/8 transition-all duration-300 hover:-translate-y-1 hover:ring-brand/40 hover:shadow-xl hover:shadow-brand/10"
+              >
+                <span aria-hidden="true"
+                  class="pointer-events-none absolute -bottom-4 -right-1 select-none font-black text-white/[0.06] text-[5.5rem] leading-none">
+                  {r.data.numero}
+                </span>
+                <div class="relative">
+                  <span class="text-[10px] font-extrabold tracking-widest text-brand">N.° {r.data.numero}</span>
+                  <p class="text-[10px] text-white/40 mt-0.5">{r.data.mes} {r.data.year}</p>
+                </div>
+                <h2 class="relative mt-3 text-sm font-bold leading-snug text-white line-clamp-2 flex-1">
+                  {r.data.analisisParlamentario}
+                </h2>
+                <p class="relative mt-1 text-[10px] text-white/35">— {r.data.autorParlamentario}</p>
+                <div class="relative mt-3 flex flex-wrap gap-1">
+                  {r.data.temas.slice(0, 2).map((t: string) => (
+                    <span class="rounded bg-white/[0.07] px-2 py-0.5 text-[10px] text-white/50">{t}</span>
+                  ))}
+                </div>
+                <div class="relative mt-4 flex">
+                  <a href={`/publicaciones/${slug}/`}
+                    class="solid-cta inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-bold text-white transition-all duration-200 hover:bg-brand-dark"
+                    aria-label={`Leer edición NJ ${r.data.numero}`}>
+                    <svg aria-hidden="true" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span class="hidden sm:inline">Leer edición</span>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ── VISTA FILTRADA (con filtro de autor activo) ─────────────── -->
+  <div id="section-filtered" class="hidden bg-white py-10 pb-20">
     <div class="container-g">
-      <p class="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-muted">Últimas ediciones</p>
+      <p id="filtered-label" class="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-muted">Resultados</p>
       <div class="grid gap-5 sm:grid-cols-2">
-        {featured.map((r) => {
+        {revistas.map((r) => {
           const slug = r.id.replace(/\.mdx$/, '');
           return (
             <article
               data-year={r.data.year}
               data-autor={r.data.autorParlamentario ?? ''}
-              data-card-wrapper
+              data-card-filtered
               class="card-reveal group relative flex min-h-[300px] flex-col overflow-hidden rounded-2xl bg-navy p-7 ring-1 ring-white/8 transition-all duration-300 hover:-translate-y-1 hover:ring-brand/40 hover:shadow-2xl hover:shadow-brand/15"
             >
               <span aria-hidden="true"
@@ -178,55 +279,7 @@ const autoresParlamentarios = [
         })}
       </div>
     </div>
-  </section>
-
-  <!-- ── ARCHIVO ─────────────────────────────────────────────────── -->
-  <section class="bg-white pt-4 pb-20">
-    <div class="container-g">
-      <p class="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-muted">Archivo</p>
-      <div class="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-        {archive.map((r) => {
-          const slug = r.id.replace(/\.mdx$/, '');
-          return (
-            <article
-              data-year={r.data.year}
-              data-autor={r.data.autorParlamentario ?? ''}
-              data-card-wrapper
-              class="card-reveal group relative flex flex-col overflow-hidden rounded-xl bg-navy p-5 ring-1 ring-white/8 transition-all duration-300 hover:-translate-y-1 hover:ring-brand/40 hover:shadow-xl hover:shadow-brand/10"
-            >
-              <span aria-hidden="true"
-                class="pointer-events-none absolute -bottom-4 -right-1 select-none font-black text-white/[0.06] text-[5.5rem] leading-none">
-                {r.data.numero}
-              </span>
-              <div class="relative">
-                <span class="text-[10px] font-extrabold tracking-widest text-brand">N.° {r.data.numero}</span>
-                <p class="text-[10px] text-white/40 mt-0.5">{r.data.mes} {r.data.year}</p>
-              </div>
-              <h2 class="relative mt-3 text-sm font-bold leading-snug text-white line-clamp-2 flex-1">
-                {r.data.analisisParlamentario}
-              </h2>
-              <p class="relative mt-1 text-[10px] text-white/35">— {r.data.autorParlamentario}</p>
-              <div class="relative mt-3 flex flex-wrap gap-1">
-                {r.data.temas.slice(0, 2).map((t: string) => (
-                  <span class="rounded bg-white/[0.07] px-2 py-0.5 text-[10px] text-white/50">{t}</span>
-                ))}
-              </div>
-              <div class="relative mt-4 flex">
-                <a href={`/publicaciones/${slug}/`}
-                  class="solid-cta inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-bold text-white transition-all duration-200 hover:bg-brand-dark"
-                  aria-label={`Leer edición NJ ${r.data.numero}`}>
-                  <svg aria-hidden="true" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                  </svg>
-                  <span class="hidden sm:inline">Leer edición</span>
-                </a>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </div>
-  </section>
+  </div>
 
 </BaseLayout>
 
@@ -252,21 +305,42 @@ const autoresParlamentarios = [
       }),
       { threshold: 0.05, rootMargin: '0px 0px 100px 0px' },
     );
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.card-reveal').forEach((el) => observer.observe(el));
-    });
+    const observeCards = () => {
+      document.querySelectorAll('.card-reveal:not(.visible)').forEach((el) => observer.observe(el));
+    };
+    requestAnimationFrame(observeCards);
 
     // ── State ───────────────────────────────────────────────────
-    const wrappers = document.querySelectorAll<HTMLElement>('[data-card-wrapper]');
-    let activeYear = 'all';
+    const sectionNormal   = document.getElementById('section-normal')!;
+    const sectionFiltered = document.getElementById('section-filtered')!;
+    const normalCards     = document.querySelectorAll<HTMLElement>('[data-card-normal]');
+    const filteredCards   = document.querySelectorAll<HTMLElement>('[data-card-filtered]');
+    let activeYear  = 'all';
     let activeAutor = 'all';
 
     function applyFilters() {
-      wrappers.forEach((w) => {
-        const matchYear = activeYear === 'all' || w.dataset.year === activeYear;
-        const matchAutor = activeAutor === 'all' || (w.dataset.autor ?? '').includes(activeAutor);
-        w.style.display = matchYear && matchAutor ? '' : 'none';
-      });
+      const hasAutor = activeAutor !== 'all';
+
+      if (hasAutor) {
+        // Mostrar vista filtrada con cards grandes
+        sectionNormal.classList.add('hidden');
+        sectionFiltered.classList.remove('hidden');
+        filteredCards.forEach((c) => {
+          const matchYear  = activeYear === 'all' || c.dataset.year === activeYear;
+          const matchAutor = (c.dataset.autor ?? '').includes(activeAutor);
+          c.style.display  = matchYear && matchAutor ? '' : 'none';
+        });
+        // Reanimar cards visibles
+        requestAnimationFrame(observeCards);
+      } else {
+        // Mostrar vista normal
+        sectionFiltered.classList.add('hidden');
+        sectionNormal.classList.remove('hidden');
+        normalCards.forEach((c) => {
+          const matchYear = activeYear === 'all' || c.dataset.year === activeYear;
+          c.style.display = matchYear ? '' : 'none';
+        });
+      }
     }
 
     // ── Filtro año (pills) ──────────────────────────────────────
@@ -314,8 +388,8 @@ const autoresParlamentarios = [
 
     function selectAutor(name: string) {
       selectedAutor = name;
-      activeAutor = name;
-      input.value = name;
+      activeAutor   = name;
+      input.value   = name;
       clearBtn.classList.remove('hidden');
       clearBtn.classList.add('inline-flex');
       options.forEach((o) => {
@@ -327,8 +401,8 @@ const autoresParlamentarios = [
 
     function clearAutor() {
       selectedAutor = '';
-      activeAutor = 'all';
-      input.value = '';
+      activeAutor   = 'all';
+      input.value   = '';
       clearBtn.classList.add('hidden');
       clearBtn.classList.remove('inline-flex');
       options.forEach((o) => { o.setAttribute('aria-selected', 'false'); o.style.display = ''; });
@@ -351,7 +425,6 @@ const autoresParlamentarios = [
 
     clearBtn.addEventListener('click', clearAutor);
 
-    // Cerrar al hacer clic fuera
     document.addEventListener('click', (e) => {
       if (!document.getElementById('autor-combobox')?.contains(e.target as Node)) {
         hideDropdown();
@@ -359,7 +432,6 @@ const autoresParlamentarios = [
       }
     });
 
-    // Teclado: Escape cierra, Enter selecciona primer visible
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') { hideDropdown(); input.blur(); }
       if (e.key === 'Enter') {
