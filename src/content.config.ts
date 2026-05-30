@@ -31,6 +31,9 @@ const publicaciones = defineCollection({
     analisis: z.string(),
     autor: z.string(),
     temas: z.array(z.string()),
+    analisisParlamentario: z.string().optional(),
+    autorParlamentario: z.string().optional(),
+    resenaParlamentaria: z.string().optional(),
   }),
 });
 

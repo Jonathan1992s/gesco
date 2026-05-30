@@ -96,6 +96,18 @@ const schema = [
         <p class="mt-1 text-xs text-muted">{entry.data.autor}</p>
       </div>
 
+      <!-- Artículo parlamentario -->
+      {entry.data.analisisParlamentario && (
+        <div class="mb-5 rounded-xl bg-brand/5 p-4 ring-1 ring-brand/15">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1.5">Derecho Parlamentario</p>
+          <p class="text-sm font-semibold text-navy leading-snug">{entry.data.analisisParlamentario}</p>
+          <p class="mt-1 text-xs text-muted">{entry.data.autorParlamentario}</p>
+          {entry.data.resenaParlamentaria && (
+            <p class="mt-2 text-xs leading-relaxed text-muted/80">{entry.data.resenaParlamentaria}</p>
+          )}
+        </div>
+      )}
+
       <!-- Descripción -->
       <p class="text-xs leading-relaxed text-muted mb-5">{entry.data.description}</p>
 
