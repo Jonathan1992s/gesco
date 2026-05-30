@@ -19,7 +19,6 @@ const years = [...new Set(revistas.map((r) => r.data.year))].sort((a, b) => b - 
 const featured = revistas.slice(0, 2);
 const archive = revistas.slice(2);
 
-// Autores únicos del campo parlamentario (splitear co-autores)
 const autoresParlamentarios = [
   ...new Set(
     revistas
@@ -27,14 +26,6 @@ const autoresParlamentarios = [
       .flatMap((r) => r.data.autorParlamentario!.split(' / ').map((a) => a.trim())),
   ),
 ].sort((a, b) => a.split(' ').slice(-1)[0].localeCompare(b.split(' ').slice(-1)[0]));
-
-// Nombre corto para botón: inicial + dos apellidos
-function abreviar(nombre: string) {
-  const partes = nombre.trim().split(' ');
-  const inicial = partes[0][0] + '.';
-  const apellidos = partes.slice(-2).join(' ');
-  return `${inicial} ${apellidos}`;
-}
 ---
 
 <BaseLayout title={seo.title} description={seo.description} canonical={canonical} schema={schema}>
@@ -76,21 +67,65 @@ function abreviar(nombre: string) {
 
   <!-- ── FILTROS ────────────────────────────────────────────────── -->
   <div class="sticky top-[79px] z-40 border-b border-black/8 bg-white/95 backdrop-blur">
-    <!-- Fila 1: Año -->
-    <div class="container-g flex items-center gap-2 overflow-x-auto py-2.5 scrollbar-none border-b border-black/5">
-      <span class="shrink-0 text-[10px] font-bold uppercase tracking-wider text-muted w-12">Año</span>
-      <button data-year="all" class="year-btn shrink-0 rounded-full bg-navy px-3.5 py-1.5 text-xs font-bold text-white transition-all">Todas</button>
-      {years.map((y) => (
-        <button data-year={String(y)} class="year-btn shrink-0 rounded-full border border-black/12 px-3.5 py-1.5 text-xs font-bold text-navy transition-all hover:bg-surface">{y}</button>
-      ))}
-    </div>
-    <!-- Fila 2: Autor parlamentario -->
-    <div class="container-g flex items-center gap-2 overflow-x-auto py-2.5 scrollbar-none">
-      <span class="shrink-0 text-[10px] font-bold uppercase tracking-wider text-muted w-12">Autor</span>
-      <button data-autor="all" class="autor-btn shrink-0 rounded-full bg-navy px-3.5 py-1.5 text-xs font-bold text-white transition-all">Todos</button>
-      {autoresParlamentarios.map((a) => (
-        <button data-autor={a} class="autor-btn shrink-0 rounded-full border border-black/12 px-3.5 py-1.5 text-xs font-bold text-navy transition-all hover:bg-surface whitespace-nowrap">{abreviar(a)}</button>
-      ))}
+    <div class="container-g flex flex-wrap items-center gap-x-6 gap-y-2 py-3">
+
+      <!-- Filtro por año (pills) -->
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-muted">Año</span>
+        <button data-year="all" class="year-btn rounded-full bg-navy px-3.5 py-1.5 text-xs font-bold text-white transition-all">Todas</button>
+        {years.map((y) => (
+          <button data-year={String(y)} class="year-btn rounded-full border border-black/12 px-3.5 py-1.5 text-xs font-bold text-navy transition-all hover:bg-surface">{y}</button>
+        ))}
+      </div>
+
+      <!-- Combobox por autor -->
+      <div class="relative flex-1 min-w-[200px] max-w-xs" id="autor-combobox">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-muted sr-only">Autor</span>
+        <div class="relative">
+          <!-- Icono buscar -->
+          <svg class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            id="autor-input"
+            type="text"
+            placeholder="Filtrar por autor experto..."
+            autocomplete="off"
+            spellcheck="false"
+            class="w-full rounded-full border border-black/12 bg-white py-1.5 pl-8 pr-8 text-xs font-medium text-navy placeholder:text-muted/60 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30 transition-all"
+          />
+          <!-- Botón limpiar -->
+          <button
+            id="autor-clear"
+            type="button"
+            aria-label="Limpiar filtro de autor"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 hidden h-4 w-4 items-center justify-center rounded-full bg-black/10 text-navy hover:bg-black/20 transition-colors"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="h-2.5 w-2.5" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <!-- Dropdown sugerencias -->
+        <ul
+          id="autor-dropdown"
+          role="listbox"
+          aria-label="Autores disponibles"
+          class="absolute left-0 right-0 top-full mt-1 hidden max-h-60 overflow-y-auto rounded-xl border border-black/10 bg-white py-1 shadow-xl shadow-black/10 z-50"
+        >
+          {autoresParlamentarios.map((a) => (
+            <li
+              role="option"
+              aria-selected="false"
+              data-autor-value={a}
+              class="autor-option cursor-pointer px-4 py-2 text-xs font-medium text-navy hover:bg-brand/8 hover:text-brand transition-colors"
+            >
+              {a}
+            </li>
+          ))}
+        </ul>
+      </div>
+
     </div>
   </div>
 
@@ -101,7 +136,6 @@ function abreviar(nombre: string) {
       <div class="grid gap-5 sm:grid-cols-2">
         {featured.map((r) => {
           const slug = r.id.replace(/\.mdx$/, '');
-          const autores = r.data.autorParlamentario?.split(' / ').map(a => a.trim()) ?? [];
           return (
             <article
               data-year={r.data.year}
@@ -179,9 +213,10 @@ function abreviar(nombre: string) {
                 {r.data.analisis}
               </h2>
               {r.data.analisisParlamentario && (
-                <p class="relative mt-2 text-[11px] leading-snug text-brand/70 line-clamp-2">
-                  {r.data.analisisParlamentario}
-                </p>
+                <div class="relative mt-2">
+                  <p class="text-[11px] leading-snug text-brand/80 line-clamp-2">{r.data.analisisParlamentario}</p>
+                  <p class="mt-0.5 text-[10px] text-white/35">— {r.data.autorParlamentario}</p>
+                </div>
               )}
               <div class="relative mt-3 flex flex-wrap gap-1">
                 {r.data.temas.slice(0, 2).map((t: string) => (
@@ -213,16 +248,13 @@ function abreviar(nombre: string) {
     transform: translateY(20px);
     transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease, translate 0.3s ease;
   }
-  .card-reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .scrollbar-none::-webkit-scrollbar { display: none; }
-  .scrollbar-none { scrollbar-width: none; }
+  .card-reveal.visible { opacity: 1; transform: translateY(0); }
+  .autor-option[aria-selected="true"] { background-color: rgb(27 136 226 / 0.1); color: #1b88e2; font-weight: 700; }
 </style>
 
 <script>
   function initPublicaciones() {
+    // ── Reveal cards on scroll ──────────────────────────────────
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
         if (e.isIntersecting) {
@@ -232,15 +264,12 @@ function abreviar(nombre: string) {
       }),
       { threshold: 0.05, rootMargin: '0px 0px 100px 0px' },
     );
-
     requestAnimationFrame(() => {
       document.querySelectorAll('.card-reveal').forEach((el) => observer.observe(el));
     });
 
-    const yearBtns = document.querySelectorAll<HTMLButtonElement>('.year-btn');
-    const autorBtns = document.querySelectorAll<HTMLButtonElement>('.autor-btn');
+    // ── State ───────────────────────────────────────────────────
     const wrappers = document.querySelectorAll<HTMLElement>('[data-card-wrapper]');
-
     let activeYear = 'all';
     let activeAutor = 'all';
 
@@ -252,9 +281,12 @@ function abreviar(nombre: string) {
       });
     }
 
-    function setActive(btns: NodeListOf<HTMLButtonElement>, active: HTMLButtonElement) {
-      btns.forEach((b) => {
-        const on = b === active;
+    // ── Filtro año (pills) ──────────────────────────────────────
+    const yearBtns = document.querySelectorAll<HTMLButtonElement>('.year-btn');
+
+    function setYearActive(btn: HTMLButtonElement) {
+      yearBtns.forEach((b) => {
+        const on = b === btn;
         b.classList.toggle('bg-navy', on);
         b.classList.toggle('text-white', on);
         b.classList.toggle('text-navy', !on);
@@ -266,17 +298,86 @@ function abreviar(nombre: string) {
     yearBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         activeYear = btn.dataset.year!;
-        setActive(yearBtns, btn);
+        setYearActive(btn);
         applyFilters();
       });
     });
 
-    autorBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        activeAutor = btn.dataset.autor!;
-        setActive(autorBtns, btn);
-        applyFilters();
+    // ── Combobox autor ──────────────────────────────────────────
+    const input    = document.getElementById('autor-input') as HTMLInputElement;
+    const dropdown = document.getElementById('autor-dropdown') as HTMLUListElement;
+    const clearBtn = document.getElementById('autor-clear') as HTMLButtonElement;
+    const options  = document.querySelectorAll<HTMLLIElement>('.autor-option');
+    let selectedAutor = '';
+
+    function showDropdown() { dropdown.classList.remove('hidden'); }
+    function hideDropdown() { dropdown.classList.add('hidden'); }
+
+    function filterOptions(q: string) {
+      const lower = q.toLowerCase();
+      let visible = 0;
+      options.forEach((opt) => {
+        const match = opt.dataset.autorValue!.toLowerCase().includes(lower);
+        opt.style.display = match ? '' : 'none';
+        if (match) visible++;
       });
+      visible > 0 ? showDropdown() : hideDropdown();
+    }
+
+    function selectAutor(name: string) {
+      selectedAutor = name;
+      activeAutor = name;
+      input.value = name;
+      clearBtn.classList.remove('hidden');
+      clearBtn.classList.add('inline-flex');
+      options.forEach((o) => {
+        o.setAttribute('aria-selected', o.dataset.autorValue === name ? 'true' : 'false');
+      });
+      hideDropdown();
+      applyFilters();
+    }
+
+    function clearAutor() {
+      selectedAutor = '';
+      activeAutor = 'all';
+      input.value = '';
+      clearBtn.classList.add('hidden');
+      clearBtn.classList.remove('inline-flex');
+      options.forEach((o) => { o.setAttribute('aria-selected', 'false'); o.style.display = ''; });
+      hideDropdown();
+      applyFilters();
+    }
+
+    input.addEventListener('focus', () => filterOptions(input.value));
+    input.addEventListener('input', () => {
+      if (selectedAutor && input.value !== selectedAutor) clearAutor();
+      filterOptions(input.value);
+    });
+
+    options.forEach((opt) => {
+      opt.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        selectAutor(opt.dataset.autorValue!);
+      });
+    });
+
+    clearBtn.addEventListener('click', clearAutor);
+
+    // Cerrar al hacer clic fuera
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('autor-combobox')?.contains(e.target as Node)) {
+        hideDropdown();
+        if (!selectedAutor) input.value = '';
+      }
+    });
+
+    // Teclado: Escape cierra, Enter selecciona primer visible
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { hideDropdown(); input.blur(); }
+      if (e.key === 'Enter') {
+        const first = [...options].find((o) => o.style.display !== 'none');
+        if (first) selectAutor(first.dataset.autorValue!);
+      }
     });
   }
 
