@@ -1,7 +1,6 @@
 ﻿---
 import { createHmac } from 'node:crypto';
 import ProgramLayout from '@/layouts/ProgramLayout.astro';
-import ProgramHero from '@/components/program/ProgramHero.astro';
 import ProgramBenefits from '@/components/program/ProgramBenefits.astro';
 import CurriculumGrid from '@/components/program/CurriculumGrid.astro';
 import FAQAccordion from '@/components/program/FAQAccordion.astro';
@@ -53,7 +52,7 @@ const schema = [
 ---
 
 <ProgramLayout title={seo.title} description={seo.description} canonical={canonical} pageName={program.name} schema={schema}>
-  <ProgramHero program={program} />
+  <ChasideTest client:load apiToken={apiToken} />
 
   <section class="section-pad bg-white">
     <div class="container-g grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
@@ -64,7 +63,7 @@ const schema = [
           El simulador CHASIDE de GESCO ayuda a estudiantes de bachillerato y aspirantes universitarios a identificar áreas profesionales relacionadas con sus gustos, habilidades y forma de resolver problemas.
         </p>
         <p class="mt-4 text-muted">
-          Al finalizar puedes descargar, imprimir o enviar tus resultados para recibir orientación académica sobre carreras, universidades y preparación preuniversitaria.
+          Al finalizar puedes descargar un PDF o enviar tus resultados para recibir orientación académica sobre carreras, universidades y preparación preuniversitaria.
         </p>
       </div>
       <div class="grid gap-4 sm:grid-cols-2">
@@ -82,29 +81,6 @@ const schema = [
       </div>
     </div>
   </section>
-
-  <section class="section-pad bg-surface">
-    <div class="container-g">
-      <div class="mx-auto max-w-3xl text-center">
-        <p class="font-bold uppercase tracking-wide text-brand">Cómo funciona</p>
-        <h2 class="mt-3 text-3xl font-extrabold text-navy md:text-4xl">Instrucciones para responder el test CHASIDE</h2>
-      </div>
-      <div class="mt-10 grid gap-5 md:grid-cols-3">
-        {[
-          ['1. Responde con sinceridad', 'No hay respuestas buenas o malas. Marca Sí cuando la frase te representa y No cuando no coincide contigo.'],
-          ['2. Completa todas las preguntas', 'El resultado solo se calcula cuando las 98 preguntas están respondidas, porque cada área combina intereses y aptitudes.'],
-          ['3. Deja tus datos al final', 'Pedimos tu información al terminar para generar el reporte y facilitar el envío de resultados o asesoría académica.'],
-        ].map(([title, text]) => (
-          <article class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-            <h3 class="text-xl font-extrabold text-navy">{title}</h3>
-            <p class="mt-3 text-muted">{text}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <ChasideTest client:visible apiToken={apiToken} />
 
   <section class="section-pad bg-white">
     <div class="container-g grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">

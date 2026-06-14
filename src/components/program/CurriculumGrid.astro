@@ -4,6 +4,14 @@ interface Props {
 }
 
 const { items } = Astro.props;
+
+const curriculumDescriptions: Record<string, string> = {
+  Intereses: 'Lo que más te atrae hacer, aprender o explorar.',
+  Habilidades: 'Fortalezas que pueden convertirse en ventaja académica.',
+  'Carreras compatibles': 'Opciones universitarias alineadas con tu perfil.',
+  'Universidades posibles': 'Alternativas para comparar procesos y requisitos.',
+  'Plan de decisión': 'Próximos pasos para elegir con más seguridad.',
+};
 ---
 
 <section class="section-pad bg-surface">
@@ -11,10 +19,21 @@ const { items } = Astro.props;
     <div class="max-w-2xl">
       <p class="font-bold uppercase tracking-wide text-brand">Contenidos</p>
       <h2 class="mt-2 text-3xl font-extrabold text-navy md:text-4xl">Áreas de preparación</h2>
+      <p class="mt-4 text-muted">Estos son los puntos que se revisan para que el resultado del test se convierta en una ruta práctica de decisión.</p>
     </div>
+
     <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      {items.map((item) => (
-        <div class="rounded-2xl bg-white p-5 text-center font-bold text-navy shadow-sm">{item}</div>
+      {items.map((item, index) => (
+        <article class="relative overflow-hidden rounded-2xl border border-black/10 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-brand/30 hover:shadow-lg">
+          <span class="absolute right-4 top-4 text-4xl font-extrabold text-brand/10" aria-hidden="true">{index + 1}</span>
+          <div class="relative">
+            <span class="grid h-10 w-10 place-items-center rounded-xl bg-accent/25 text-sm font-extrabold text-navy ring-1 ring-accent/35" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3 class="mt-4 text-base font-extrabold text-navy">{item}</h3>
+            <p class="mt-2 text-sm text-muted">{curriculumDescriptions[item] ?? 'Contenido clave para avanzar con mayor claridad.'}</p>
+          </div>
+        </article>
       ))}
     </div>
   </div>

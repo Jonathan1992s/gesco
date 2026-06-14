@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import QRCode from 'qrcode';
 import {
@@ -10,6 +10,7 @@ import {
   type ChasideAreaScore,
 } from '@/data/chaside';
 import { carrerasMercado, getLevelColor } from '@/data/carreras-mercado';
+import { WA } from '@/data/whatsapp';
 
 interface StudentData {
   nombres: string;
@@ -1390,28 +1391,69 @@ export default function ChasideTest({ apiToken = '' }: ChasideTestProps) {
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
   const [message, setMessage] = useState('');
   const [resultCode, setResultCode] = useState<string>('');
+  const [isAdvancing, setIsAdvancing] = useState(false);
+  const advancingRef = useRef(false);
 
   const currentQuestion = chasideQuestions[currentIndex];
   const answeredCount = Object.keys(answers).length;
   const progress = Math.round((answeredCount / chasideQuestions.length) * 100);
   const isComplete = areAllChasideQuestionsAnswered(answers);
+  const isLastQuestion = currentIndex === chasideQuestions.length - 1;
+  const currentAnswered = answers[currentQuestion.id] !== undefined;
   const scores = useMemo(() => (isComplete ? scoreChaside(answers as ChasideAnswers) : []), [answers, isComplete]);
   const topAreas = scores.slice(0, 2);
   const maxScore = Math.max(...scores.map((area) => area.total), 1);
 
   const updateAnswer = (value: ChasideAnswer) => {
-    setAnswers((current) => ({ ...current, [currentQuestion.id]: value }));
+    if (advancingRef.current) return;
+
+    advancingRef.current = true;
+    setIsAdvancing(true);
+
+    const nextAnswers = { ...answers, [currentQuestion.id]: value };
+    setAnswers(nextAnswers);
     setMessage('');
+
+    if (isLastQuestion) {
+      advancingRef.current = false;
+      setIsAdvancing(false);
+      return;
+    }
+
+    window.setTimeout(() => {
+      if (currentIndex < chasideQuestions.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+        advancingRef.current = false;
+        setIsAdvancing(false);
+        return;
+      }
+
+      if (areAllChasideQuestionsAnswered(nextAnswers)) {
+        setStage('lead');
+      } else {
+        setMessage(`Te faltan ${chasideQuestions.length - Object.keys(nextAnswers).length} preguntas por responder antes de ver el resultado.`);
+      }
+
+      advancingRef.current = false;
+      setIsAdvancing(false);
+    }, 180);
   };
 
   const goNext = () => {
+    if (advancingRef.current) return;
+
+    if (!currentAnswered) {
+      setMessage('Responde esta pregunta antes de avanzar.');
+      return;
+    }
+
     if (currentIndex < chasideQuestions.length - 1) {
-      setCurrentIndex((current) => current + 1);
+      setCurrentIndex(currentIndex + 1);
       return;
     }
 
     if (!isComplete) {
-      setMessage('Responde todas las preguntas antes de continuar.');
+      setMessage(`Te faltan ${chasideQuestions.length - answeredCount} preguntas por responder antes de ver el resultado.`);
       return;
     }
 
@@ -1520,20 +1562,28 @@ export default function ChasideTest({ apiToken = '' }: ChasideTestProps) {
   };
 
   return (
-    <section className="section-pad bg-surface" id="simulador-chaside">
+    <section className="relative isolate overflow-hidden bg-navy py-12 text-white md:py-16" id="simulador-chaside">
+      <div className="absolute inset-x-0 top-0 h-2 bg-accent" />
+      <div className="absolute -left-24 top-10 h-64 w-64 rounded-full bg-brand/35 blur-3xl" />
+      <div className="absolute -bottom-28 right-0 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
       <div className="container-g">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="font-bold uppercase tracking-wide text-brand">Simulador CHASIDE gratis</p>
-          <h2 className="mt-2 text-3xl font-extrabold text-navy md:text-4xl">Realiza el test vocacional CHASIDE online</h2>
-          <p className="mt-4 text-muted">
-            Responde 98 preguntas de Sí o No y recibe una lectura orientativa de tus intereses y aptitudes. No es un diagnóstico psicológico definitivo ni reemplaza una orientación vocacional profesional.
+          <h2 className="text-3xl font-extrabold text-white md:text-5xl">Test Vocacional CHASIDE Online Gratis</h2>
+          <p className="mt-3 font-bold uppercase tracking-wide text-accent">Resultado orientativo en PDF</p>
+          <p className="mt-4 text-white/78">
+            Descubre tus áreas de interés, carreras compatibles y universidades sugeridas con una lectura orientativa de tus intereses y aptitudes.
           </p>
+          <div className="mx-auto mt-5 flex max-w-2xl flex-wrap justify-center gap-2">
+            {['Empieza gratis', '98 preguntas', 'Resultado inmediato', 'PDF descargable'].map((item) => (
+              <span key={item} className="rounded-full bg-white/12 px-3 py-2 text-sm font-bold text-white ring-1 ring-white/15">{item}</span>
+            ))}
+          </div>
         </div>
 
-        <div className="mx-auto mt-10 max-w-5xl rounded-3xl bg-white p-5 shadow-xl ring-1 ring-black/5 md:p-8">
+        <div className="relative mx-auto mt-10 max-w-5xl rounded-3xl bg-white p-5 text-text shadow-2xl ring-4 ring-accent/70 md:p-8">
           {stage === 'questions' && (
             <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr]">
-              <aside className="rounded-2xl bg-surface p-5">
+              <aside className="rounded-2xl border border-brand/15 bg-brand/5 p-5">
                 <h3 className="text-xl font-extrabold text-navy">Antes de empezar</h3>
                 <div className="mt-5 grid gap-4 text-sm text-muted">
                   <p><strong className="text-navy">Duración:</strong> entre 10 y 15 minutos.</p>
@@ -1541,8 +1591,11 @@ export default function ChasideTest({ apiToken = '' }: ChasideTestProps) {
                   <p><strong className="text-navy">Recomendación:</strong> responde según lo que realmente te interesa, no según lo que otros esperan.</p>
                   <p><strong className="text-navy">Datos:</strong> los solicitaremos al final para poder generar y enviar tu resultado.</p>
                 </div>
-                <a href="#chaside-faq" className="mt-6 inline-flex min-h-11 items-center rounded-full border border-black/10 px-5 py-3 text-sm font-bold text-navy hover:bg-white">
-                  Ver preguntas frecuentes
+                <a href={WA.vocacional} target="_blank" rel="noopener noreferrer" className="solid-cta mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-green-700 px-5 py-3 text-sm font-bold text-white hover:bg-green-800">
+                  <svg aria-hidden="true" viewBox="0 0 32 32" className="h-5 w-5 fill-current">
+                    <path d="M16.01 3.2A12.68 12.68 0 0 0 5.2 22.52L3.8 28.8l6.42-1.35A12.7 12.7 0 1 0 16.01 3.2Zm0 22.96a10.29 10.29 0 0 1-5.24-1.43l-.38-.23-3.8.8.81-3.7-.25-.39a10.28 10.28 0 1 1 8.86 4.95Zm5.7-7.7c-.31-.16-1.84-.91-2.13-1.01-.29-.11-.5-.16-.71.16-.21.31-.81 1-.99 1.21-.18.21-.36.24-.67.08-.31-.16-1.31-.48-2.49-1.54-.92-.82-1.54-1.83-1.72-2.14-.18-.31-.02-.48.14-.63.14-.14.31-.36.47-.54.16-.18.21-.31.31-.52.1-.21.05-.39-.03-.55-.08-.16-.71-1.71-.97-2.34-.25-.61-.52-.53-.71-.54h-.6c-.21 0-.55.08-.84.39-.29.31-1.1 1.08-1.1 2.63s1.13 3.05 1.29 3.26c.16.21 2.23 3.4 5.4 4.77.75.32 1.34.52 1.8.66.76.24 1.45.21 1.99.13.61-.09 1.84-.75 2.1-1.48.26-.73.26-1.35.18-1.48-.08-.13-.29-.21-.6-.37Z" />
+                  </svg>
+                  Solicitar información
                 </a>
                 {import.meta.env.DEV && (
                   <button
@@ -1583,7 +1636,7 @@ export default function ChasideTest({ apiToken = '' }: ChasideTestProps) {
                   <div className="h-full rounded-full bg-brand transition-all" style={{ width: `${progress}%` }} />
                 </div>
 
-                <article className="mt-8 rounded-3xl border border-black/10 p-6">
+                <article className="mt-8 rounded-3xl border-2 border-accent bg-gradient-to-br from-white via-white to-accent/10 p-6 shadow-lg">
                   <p className="text-2xl font-extrabold leading-snug text-navy">{currentQuestion.text}</p>
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
                     {[
@@ -1597,6 +1650,8 @@ export default function ChasideTest({ apiToken = '' }: ChasideTestProps) {
                           key={option.label}
                           type="button"
                           onClick={() => updateAnswer(option.value)}
+                          disabled={isAdvancing}
+                          aria-pressed={active}
                           className={`min-h-14 rounded-2xl border px-5 py-4 text-lg font-extrabold transition ${
                             active
                               ? 'border-brand bg-brand text-white shadow-sm'
@@ -1616,7 +1671,7 @@ export default function ChasideTest({ apiToken = '' }: ChasideTestProps) {
                   <button
                     type="button"
                     onClick={() => setCurrentIndex((current) => Math.max(0, current - 1))}
-                    disabled={currentIndex === 0}
+                    disabled={currentIndex === 0 || isAdvancing}
                     className="min-h-11 rounded-full border border-black/10 px-5 py-3 font-bold text-navy transition hover:bg-surface disabled:cursor-not-allowed disabled:opacity-45"
                   >
                     Anterior
@@ -1624,10 +1679,10 @@ export default function ChasideTest({ apiToken = '' }: ChasideTestProps) {
                   <button
                     type="button"
                     onClick={goNext}
-                    disabled={answers[currentQuestion.id] === undefined}
+                    disabled={isAdvancing || !currentAnswered || (isLastQuestion && !isComplete)}
                     className="solid-cta min-h-11 rounded-full bg-brand px-6 py-3 font-bold text-white! transition hover:bg-brand-dark disabled:cursor-not-allowed disabled:bg-muted"
                   >
-                    {currentIndex === chasideQuestions.length - 1 ? 'Continuar al resultado' : 'Siguiente'}
+                    {isLastQuestion ? (isComplete ? 'Continuar al resultado' : 'Faltan preguntas') : 'Siguiente'}
                   </button>
                 </div>
               </div>

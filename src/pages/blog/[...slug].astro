@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BlogLayout from '@/layouts/BlogLayout.astro';
 import ArticleBody from '@/components/blog/ArticleBody.astro';
+import ShareButtons from '@/components/global/ShareButtons.astro';
 import { SITE } from '@/data/site';
 import { articleSchema, breadcrumbSchema, faqSchema } from '@/data/schema';
 import type { FaqItem } from '@/data/faqs';
@@ -71,4 +72,9 @@ const schema = [
   <ArticleBody>
     <Content />
   </ArticleBody>
+  <div class="border-t border-black/8 bg-white py-6">
+    <div class="container-g max-w-3xl">
+      <ShareButtons url={canonical} title={entry.data.title} />
+    </div>
+  </div>
 </BlogLayout>
